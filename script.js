@@ -222,6 +222,45 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCommitCount();
 
     /* ===========================================================
+       GITHUB PROJECTS — real creation dates, newest first
+       Pulls each repo's created_at from the public GitHub API
+       (same no-auth approach as the commit counter) and sorts
+       the cards accordingly, so this never needs manual updates
+       when a new repo is added.
+    =========================================================== */
+    async function loadGithubProjectDates() {
+        const grid = document.getElementById('githubProjectsGrid');
+        if (!grid) return;
+
+        const tiles = Array.from(grid.querySelectorAll('.info-tile[data-repo]'));
+
+        await Promise.all(tiles.map(async (tile) => {
+            const repo = tile.getAttribute('data-repo');
+            const dateEl = tile.querySelector('.repo-date');
+            try {
+                const res = await fetch(`https://api.github.com/repos/being-hd/${repo}`);
+                if (!res.ok) throw new Error('github api error');
+                const data = await res.json();
+                const created = new Date(data.created_at);
+                tile.dataset.createdTs = created.getTime();
+                if (dateEl) {
+                    dateEl.textContent = created.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                }
+            } catch (err) {
+                if (dateEl) dateEl.textContent = '—';
+                tile.dataset.createdTs = '0';
+            }
+        }));
+
+        tiles
+            .slice()
+            .sort((a, b) => Number(b.dataset.createdTs) - Number(a.dataset.createdTs))
+            .forEach((tile) => grid.appendChild(tile));
+    }
+
+    loadGithubProjectDates();
+
+    /* ===========================================================
        CHESS PUZZLE — Lichess daily puzzle, solvable in-page
     =========================================================== */
     let puzzleData = null;
