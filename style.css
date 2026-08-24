@@ -161,10 +161,10 @@ img[data-piece] { max-width: none; width: auto; height: auto; display: inline-bl
     color: #10140f;
 }
 
-.sjr-q.q1 { background: #7fc99a; } /* SCImago green */
-.sjr-q.q2 { background: #e8d36a; } /* SCImago yellow */
-.sjr-q.q3 { background: #e3a35f; } /* SCImago orange */
-.sjr-q.q4 { background: #d9755f; } /* SCImago red */
+.sjr-q.q1 { background: #ADD372; } /* SCImago green */
+.sjr-q.q2 { background: #EBD868; } /* SCImago yellow */
+.sjr-q.q3 { background: #F5AA60; } /* SCImago orange */
+.sjr-q.q4 { background: #DF675D; } /* SCImago red */
 .sjr-q.unranked { background: var(--bg-raised-2); color: var(--text-faint); }
 
 .sjr-score { font-size: 10.5px; color: var(--text-soft); }
