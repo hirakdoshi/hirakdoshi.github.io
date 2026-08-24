@@ -111,6 +111,12 @@ img[data-piece] { max-width: none; width: auto; height: auto; display: inline-bl
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 14px;
+    align-items: stretch;
+}
+
+.card-grid .post-card {
+    margin-bottom: 0;
+    height: 100%;
 }
 
 .info-tile {
