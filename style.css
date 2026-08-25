@@ -27,6 +27,56 @@
     color-scheme: dark;
 }
 
+/* ===========================================================
+   Light mode — warm cream/parchment, same accent family.
+   Scoped to <html> so an inline blocking script in <head> can
+   apply it before first paint (no flash of dark theme).
+=========================================================== */
+html.light-mode {
+    --bg: #e8d9c3;
+    --bg-raised: #ddc9a9;
+    --bg-raised-2: #d1b892;
+    --line: rgba(58, 42, 24, 0.18);
+    --line-strong: rgba(58, 42, 24, 0.32);
+
+    --accent: #a8551f;
+    --accent-bright: #8a4316;
+    --accent-dim: rgba(138, 67, 22, 0.5);
+
+    --text: #241a10;
+    --text-soft: #4a3624;
+    --text-faint: #715a41;
+
+    --live: #3d7e57;
+    --white-side: #241a10;
+    --black-side: #715a41;
+
+    color-scheme: light;
+}
+
+html.light-mode body::before { display: none; }
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 301;
+    background: var(--bg-raised);
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 15px;
+    cursor: pointer;
+    transition: color .15s var(--ease), border-color .15s var(--ease);
+}
+
+.theme-toggle:hover { color: var(--accent-bright); border-color: var(--accent); }
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: hidden; }
 
@@ -237,7 +287,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
     display: none;
     position: fixed;
     top: 18px;
-    right: 18px;
+    right: 62px;
     z-index: 300;
     background: var(--bg-raised);
     border: 1px solid var(--line-strong);
@@ -303,7 +353,8 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .photo-modal-box .modal-close {
     top: 8px;
     right: 3px;
-    background: rgba(14, 18, 22, 0.75);
+    background: var(--bg);
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border-color: var(--line-strong);
@@ -511,19 +562,110 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .footer-socials a { border: none; font-family: var(--font-mono); font-size: 12px; color: var(--text-soft); }
 .footer-socials a:hover { color: var(--accent); }
 
-.footer-contact {
+.footer-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
     justify-self: center;
+}
+
+.footer-contact {
     font-family: var(--font-mono);
     font-size: 12px;
     color: var(--text-soft);
     border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
 }
 
 .footer-contact:hover { color: var(--accent); }
 
+.footer-changelog {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+}
+
+.footer-changelog:hover { color: var(--accent); }
+
+.changelog-text-short { display: none; }
+
 @media screen and (max-width: 640px) {
-    .site-footer { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .changelog-text-full { display: none; }
+    .changelog-text-short { display: inline; }
+}
+
+/* ===========================================================
+   Contact modal — form fields
+=========================================================== */
+.contact-form { text-align: left; }
+
+.form-row { margin-bottom: 16px; }
+
+.form-row label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+}
+
+.form-row input,
+.form-row textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    resize: vertical;
+    transition: border-color .15s var(--ease);
+}
+
+.form-row input:focus,
+.form-row textarea:focus {
+    outline: none;
+    border-color: var(--accent-bright);
+}
+
+.form-status {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin: 10px 0 0;
+    min-height: 16px;
+}
+
+.form-status.sending { color: var(--text-soft); }
+.form-status.success { color: var(--live); }
+.form-status.error { color: #d9755f; }
+
+@media screen and (max-width: 640px) {
+    .site-footer {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 20px;
+        padding-top: 28px;
+        padding-bottom: 40px;
+    }
     .footer-socials, .footer-contact { justify-self: center; }
+    .footer-center { gap: 12px; }
+    .footer-socials { gap: 24px; }
+    .footer-contact, .footer-changelog {
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        padding: 8px 18px;
+    }
 }
 
 /* ===========================================================
@@ -638,17 +780,22 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .modal-overlay.open { display: flex; }
 
 .modal-box {
-    background: linear-gradient(155deg, rgba(28, 42, 48, 0.92), rgba(22, 33, 38, 0.96));
+    background: linear-gradient(155deg, var(--bg-raised-2), var(--bg-raised));
     border: 1px solid var(--line-strong);
     border-radius: 14px;
     max-width: 560px;
     width: 100%;
     max-height: 86vh;
     overflow-y: auto;
-    padding: 30px 32px;
+    padding: 30px 36px 30px 32px;
     position: relative;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
 }
+
+.modal-box::-webkit-scrollbar { width: 6px; }
+.modal-box::-webkit-scrollbar-track { background: transparent; }
+.modal-box::-webkit-scrollbar-thumb { background: var(--accent-dim); border-radius: 4px; border: none; }
+.modal-box::-webkit-scrollbar-thumb:hover { background: var(--accent-bright); }
 
 .modal-close {
     position: absolute;
@@ -1083,6 +1230,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
     color: var(--text-soft);
     border: none;
     margin-bottom: 8px;
+    transform: translateY(-14px);
 }
 
 .article-back:hover { color: var(--accent); }
@@ -1098,3 +1246,94 @@ strong { color: var(--accent-bright); font-weight: 600; }
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
 }
+
+/* ===========================================================
+   Print — clean, ink-friendly, no dark theme or navigation.
+   Only activates for actual printing / "Print to PDF", never
+   affects normal on-screen browsing.
+=========================================================== */
+@media print {
+    /* Hide everything that only makes sense on screen */
+    .site-header,
+    .side-col,
+    .site-footer,
+    .header-toggle,
+    .modal-overlay,
+    .puzzle-block,
+    .research-block,
+    .article-share-row,
+    .post-share,
+    .share-link,
+    .copy-link-btn,
+    .code-copy-btn,
+    .article-back {
+        display: none !important;
+    }
+
+    /* Flip dark theme to plain black-on-white for print */
+    body, .shell, .main-col, .block, .card, .info-tile, .post-card {
+        background: #fff !important;
+        color: #111 !important;
+    }
+
+    .main-col {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .shell { display: block !important; }
+
+    h1, h2, h3, h4, .about-name, .block-label,
+    .entry-title, .entry-title strong, .post-title {
+        color: #000 !important;
+    }
+
+    a { color: #000 !important; text-decoration: underline; }
+
+    /* Show the actual URL after external links, since a click
+       target is meaningless on paper */
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.75em;
+        color: #555;
+    }
+
+    .live-dot, .now-led, .trunk-end-dot,
+    .month-body::before, .month-body::after,
+    .month-body .post-card::before {
+        display: none !important;
+    }
+
+    .info-tile, .post-card, table, .article-table-wrap {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+
+    .entry-item, .post-card, .info-tile {
+        page-break-inside: avoid;
+    }
+}
+
+/* ===========================================================
+   Changelog
+=========================================================== */
+.changelog-list {
+    list-style: disc;
+    padding-left: 20px;
+    margin: 12px 0 0;
+}
+
+.changelog-list li {
+    margin-bottom: 7px;
+    font-size: 12.5px;
+    color: var(--text-soft);
+    line-height: 1.6;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.changelog-list li::marker { color: var(--accent); }
+
+.changelog-list li:last-child { margin-bottom: 0; }
