@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{if(localStorage.getItem('site-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}})();</script>
+
 <meta charset="UTF-8">
+<meta name="color-scheme" content="dark light">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Projects — Hirak Doshi</title>
 <meta name="description" content="From lecture notes to hobby projects: using technical skills to bring mathematics to life.">
@@ -11,6 +14,7 @@
 </head>
 <body class="no-side-mobile">
 
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light/dark mode">☀️</button>
 <button class="header-toggle" id="headerToggle">menu</button>
 
 <header class="site-header">
@@ -94,7 +98,10 @@
 
 <footer class="site-footer">
     <p>&copy; Hirak Doshi <span id="year"></span></p>
-    <a class="footer-contact" href="mailto:hd92sssihl.psn@gmail.com" target="_blank" rel="noopener">Contact me →</a>
+    <div class="footer-center">
+        <button class="footer-contact" type="button" id="contactTrigger">Contact me →</button>
+        <button class="footer-changelog" type="button" id="changelogTrigger"><span class="changelog-text-full">View Changelogs</span><span class="changelog-text-short">Changelogs</span></button>
+    </div>
     <div class="footer-socials">
         <a href="https://twitter.com/beinghd16/" target="_blank" rel="noopener">X</a>
         <a href="https://github.com/being-hd" target="_blank" rel="noopener">GitHub</a>
@@ -126,6 +133,130 @@
         <div class="puzzle-actions">
             <button class="btn btn-ghost" id="puzzleResetBtn">Reset</button>
             <a class="btn" id="puzzleAnalyzeBtn" href="#" target="_blank" rel="noopener">Analyze on Lichess →</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="contactModal">
+    <div class="modal-box">
+        <button class="modal-close" id="contactModalClose">&times;</button>
+        <span class="modal-tag">Get in touch</span>
+        <h3>Send a message</h3>
+        <form class="contact-form" id="contactForm">
+            <div class="form-row">
+                <label for="cf-name">Name</label>
+                <input type="text" id="cf-name" name="name" required>
+            </div>
+            <div class="form-row">
+                <label for="cf-email">Email</label>
+                <input type="email" id="cf-email" name="email" required>
+            </div>
+            <div class="form-row">
+                <label for="cf-message">Message</label>
+                <textarea id="cf-message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn" id="contactSubmitBtn">Send message →</button>
+            <p class="form-status" id="contactFormStatus"></p>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="changelogModal">
+    <div class="modal-box">
+        <button class="modal-close" id="changelogModalClose">&times;</button>
+        <span class="modal-tag">Changelog</span>
+        <h3>Site history</h3>
+        <div class="post-list">
+
+            <div class="post-card">
+                <div class="post-meta-row">
+                    <span class="post-tag">v1.5.1</span>
+                    <span class="post-date">August 25, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Added a "View Changelog" trigger in the footer, opening the changelog itself as a modal instead of a page section</li>
+                    <li>Fixed scrollbars visually breaking the border corner on card lists and modal boxes</li>
+                    <li>Changelog list now uses standard bullets and justified text, matching the rest of the site</li>
+                    <li>Redesigned the mobile footer: better spacing, bordered pill buttons for Contact and Changelogs</li>
+                </ul>
+            </div>
+
+            <div class="post-card">
+                <div class="post-meta-row">
+                    <span class="post-tag">v1.5.0</span>
+                    <span class="post-date">August 25, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Reading-time estimates added to every Notebook post, computed live from actual word count (code blocks excluded, so estimates stay accurate as posts change)</li>
+                    <li>Real, working contact form — opens in the same blurred modal used elsewhere on the site, submits via Formspree, replacing the old <code>mailto:</code> link</li>
+                    <li>Print-friendly stylesheet: a clean, black-on-white version of every page for printing or exporting to PDF</li>
+                    <li>Light/dark mode toggle added site-wide, with the choice remembered across pages and future visits</li>
+                </ul>
+            </div>
+
+            <div class="post-card">
+                <div class="post-meta-row">
+                    <span class="post-tag">v1.4.0</span>
+                    <span class="post-date">August 23, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Reworked the Projects page: removed Certifications, dropped membership ID numbers, reordered content so GitHub Projects sits above Memberships</li>
+                    <li>Mobile fix: Memberships and GitHub Projects now render as a proper 2-column grid on phones instead of a single stacked list</li>
+                    <li>GitHub project cards now show live, auto-fetched creation dates from the GitHub API and sort themselves newest-first automatically</li>
+                </ul>
+            </div>
+
+            <div class="post-card">
+                <div class="post-meta-row">
+                    <span class="post-tag">v1.3.0</span>
+                    <span class="post-date">August 19–22, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Learning Linux — II: The Filesystem Hierarchy — a plain-language tour of /etc, /var, /opt, /bin, /usr and the rest</li>
+                    <li>Learning Linux — III: Basic Commands, Files &amp; Navigation — 15 real, tested commands with actual terminal output</li>
+                    <li>Copy-to-clipboard buttons added on every code block, with a clear visual distinction between commands and their output</li>
+                </ul>
+            </div>
+
+            <div class="post-card">
+                <div class="post-meta-row">
+                    <span class="post-tag">v1.2.0</span>
+                    <span class="post-date">August 17–18, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Finalized the Notebook post-card design: bordered cards, a "Share" button with clipboard copy, consistent published-date formatting</li>
+                    <li>Built month/year grouping for Notebook entries, with a custom tree connector — trunk line, dot, and curved branch — linking each post to its month</li>
+                    <li>Began the Learning Linux series — Part I: Manual Partitioning During Installation, covering both single-OS and dual-boot setups, including a real BitLocker snag encountered along the way</li>
+                    <li>Diagnosed and fixed a tablet-specific layout bug that caused the page to wiggle and misalign on mid-sized screens</li>
+                </ul>
+            </div>
+
+            <div class="post-card">
+                <div class="post-meta-row">
+                    <span class="post-tag">v1.1.0</span>
+                    <span class="post-date">August 16, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Introduced the Notebook section — a running journal separate from the formal Research and Teaching pages</li>
+                    <li>Drafted the first long-form post (an FSL/MRtrix3 setup guide), later put on hold to make room for a different series</li>
+                    <li>Fixed the site favicon and corrected broken chess piece rendering</li>
+                </ul>
+            </div>
+
+            <div class="post-card">
+                <div class="post-meta-row">
+                    <span class="post-tag">v1.0.0</span>
+                    <span class="post-date">August 15, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Complete ground-up redesign: dark charcoal, mono/terminal-inspired dashboard layout, replacing the original site entirely</li>
+                    <li>Built Home, Research, Teaching, and Projects pages</li>
+                    <li>"Read Along" — a live research-paper feed pulling from CrossRef, rotating across Mathematical Imaging, Motion &amp; Optical Flow, and Diffusion MRI</li>
+                    <li>A real, playable daily Lichess puzzle, solvable directly on the site with move validation and an "Analyze on Lichess" link</li>
+                    <li>SJR quartile badges added to publications, color-coded and linked to each journal's SCImago page</li>
+                </ul>
+            </div>
+
         </div>
     </div>
 </div>
