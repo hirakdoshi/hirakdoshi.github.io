@@ -1,4 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
+    /* ---------------------------------------------------------
+       Theme toggle (light/dark) — the inline script in <head>
+       already applied the saved preference before paint, to
+       avoid a flash of the wrong theme. This just wires up the
+       click handler and keeps the icon in sync.
+    --------------------------------------------------------- */
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        const syncIcon = () => {
+            const isLight = document.documentElement.classList.contains('light-mode');
+            themeToggle.textContent = isLight ? '🌙' : '☀️';
+            themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+        };
+        syncIcon();
+
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.documentElement.classList.toggle('light-mode');
+            try {
+                localStorage.setItem('site-theme', isLight ? 'light' : 'dark');
+            } catch (err) {
+                // localStorage unavailable (private browsing, etc.) — toggle still works for this page view
+            }
+            syncIcon();
+        });
+    }
+
     document.getElementById('year').textContent = new Date().getFullYear();
 
     /* ---------------------------------------------------------
@@ -458,4 +484,78 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1600);
         });
     });
+
+    /* ===========================================================
+       NOTEBOOK — reading time estimate
+       Computed from the actual rendered word count of .article-body,
+       excluding code blocks (code isn't read at prose speed). Uses
+       200 wpm, a standard estimate. Recalculates automatically for
+       any future post — nothing to maintain per-post.
+    =========================================================== */
+    const readingTimeEl = document.getElementById('readingTime');
+    const articleBody = document.querySelector('.article-body');
+    if (readingTimeEl && articleBody) {
+        const clone = articleBody.cloneNode(true);
+        clone.querySelectorAll('pre').forEach((el) => el.remove());
+        const text = clone.textContent || '';
+        const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+        const minutes = Math.max(1, Math.round(wordCount / 200));
+        readingTimeEl.textContent = `${minutes} min read`;
+    }
+
+    /* ===========================================================
+       CONTACT MODAL — opens on "Contact me →", submits via
+       Formspree AJAX so the page never navigates away.
+       Replace FORMSPREE_ENDPOINT with your real form URL from
+       formspree.io once you've created a form there.
+    =========================================================== */
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdenqeqp';
+
+    const contactTrigger = document.getElementById('contactTrigger');
+
+    const changelogTrigger = document.getElementById('changelogTrigger');
+    if (changelogTrigger && document.getElementById('changelogModal')) {
+        const changelogModal = wireModal('changelogModal', 'changelogModalClose');
+        changelogTrigger.addEventListener('click', () => changelogModal.open());
+    }
+
+    if (contactTrigger && document.getElementById('contactModal')) {
+        const contactModal = wireModal('contactModal', 'contactModalClose');
+        contactTrigger.addEventListener('click', () => contactModal.open());
+
+        const contactForm = document.getElementById('contactForm');
+        const statusEl = document.getElementById('contactFormStatus');
+        const submitBtn = document.getElementById('contactSubmitBtn');
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                statusEl.textContent = 'Sending…';
+                statusEl.className = 'form-status sending';
+                submitBtn.disabled = true;
+
+                try {
+                    const res = await fetch(FORMSPREE_ENDPOINT, {
+                        method: 'POST',
+                        body: new FormData(contactForm),
+                        headers: { Accept: 'application/json' }
+                    });
+
+                    if (res.ok) {
+                        statusEl.textContent = 'Message sent — thanks, I\'ll get back to you soon.';
+                        statusEl.className = 'form-status success';
+                        contactForm.reset();
+                    } else {
+                        statusEl.textContent = 'Something went wrong — try again, or email directly.';
+                        statusEl.className = 'form-status error';
+                    }
+                } catch (err) {
+                    statusEl.textContent = 'Network error — check your connection and try again.';
+                    statusEl.className = 'form-status error';
+                }
+
+                submitBtn.disabled = false;
+            });
+        }
+    }
 });
