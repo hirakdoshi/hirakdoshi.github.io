@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const el = document.getElementById('commitCount');
         if (!el) return;
         try {
-            const res = await fetch('https://api.github.com/repos/being-hd/being-hd.github.io/commits?per_page=1');
+            const res = await fetch('https://api.github.com/repos/hirakdoshi/hirakdoshi.github.io/commits?per_page=1');
             if (!res.ok) throw new Error('github api error');
 
             const link = res.headers.get('Link');
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const repo = tile.getAttribute('data-repo');
             const dateEl = tile.querySelector('.repo-date');
             try {
-                const res = await fetch(`https://api.github.com/repos/being-hd/${repo}`);
+                const res = await fetch(`https://api.github.com/repos/hirakdoshi/${repo}`);
                 if (!res.ok) throw new Error('github api error');
                 const data = await res.json();
                 const created = new Date(data.created_at);
