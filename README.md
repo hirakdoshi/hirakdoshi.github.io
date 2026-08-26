@@ -1,5 +1,5 @@
 ### My personal website
 
-https://being-hd.github.io
+https://hirakdoshi.github.io
 
 (Built from scratch with love and a lot of patience)
