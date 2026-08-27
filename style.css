@@ -423,6 +423,8 @@ strong { color: var(--accent-bright); font-weight: 600; }
 
 .affil-item h4 { margin: 0 0 4px; font-family: var(--font-mono); font-size: 13.5px; color: var(--accent); }
 .affil-item p { margin: 0; font-size: 13.5px; color: var(--text-soft); }
+.nowrap-link { white-space: nowrap; }
+.affil-item p + p { margin-top: 4px; }
 .affil-item .badge {
     display: inline-block;
     font-family: var(--font-mono);
@@ -900,6 +902,30 @@ strong { color: var(--accent-bright); font-weight: 600; }
     .side-col { padding: 26px 20px 32px; }
 
     .card-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+    .reviewer-grid {
+        display: flex;
+        grid-template-columns: none;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 6px;
+        margin: 0 -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+    }
+    .reviewer-grid { align-items: stretch; }
+    .reviewer-grid .post-card {
+        flex: 20 0 80%;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 160px;
+        box-sizing: border-box;
+    }
+
     .info-tile { padding: 12px 14px; }
     .info-tile h4 { font-size: 12.5px; }
     .info-tile p { font-size: 11.5px; }

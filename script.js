@@ -33,7 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerToggle = document.getElementById('headerToggle');
     const navWrap = document.getElementById('navWrap');
     if (headerToggle && navWrap) {
-        headerToggle.addEventListener('click', () => navWrap.classList.toggle('open'));
+        headerToggle.addEventListener('click', () => {
+            const opening = !navWrap.classList.contains('open');
+            if (opening && window.scrollY > 0) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            navWrap.classList.toggle('open');
+        });
     }
 
     /* ---------------------------------------------------------
