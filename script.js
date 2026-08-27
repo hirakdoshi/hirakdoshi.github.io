@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function wireModal(overlayId, closeBtnId) {
         const overlay = document.getElementById(overlayId);
         const closeBtn = document.getElementById(closeBtnId);
+        if (!overlay || !closeBtn) return { open: () => {}, close: () => {} };
         const open = () => { overlay.classList.add('open'); document.body.style.overflow = 'hidden'; };
         const close = () => { overlay.classList.remove('open'); document.body.style.overflow = ''; };
         closeBtn.addEventListener('click', close);
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const paperModal = wireModal('paperModal', 'paperModalClose');
     const puzzleModal = wireModal('puzzleModal', 'puzzleModalClose');
+    const equationModal = wireModal('equationModal', 'equationModalClose');
 
     /* ---------------------------------------------------------
        Photo zoom — click (or Enter/Space) the portrait to enlarge
@@ -81,11 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
        Sources: CrossRef + PubMed (both free, CORS-enabled, no key).
     =========================================================== */
     const CATEGORIES = [
-        {
-            tag: 'Mathematical Imaging',
-            crossrefQuery: 'mathematical imaging inverse problems variational methods optimization functional analysis',
-            matchTerms: ['mathematical imaging', 'inverse problem', 'image reconstruction', 'variational method', 'regularization', 'convex optimization', 'functional analysis', 'real analysis', 'operator theory']
-        },
         {
             tag: 'Motion & Optical Flow',
             crossrefQuery: 'optical flow motion estimation image sequence variational deep learning',
@@ -197,26 +194,144 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadPapers() {
         const listEl = document.getElementById('paperList');
         const cards = listEl.querySelectorAll('.paper-card');
-        const rotIdx = rotationIndex();
+        const card = cards[0];
+        if (!card) return;
 
-        for (let i = 0; i < CATEGORIES.length; i++) {
-            const category = CATEGORIES[i];
-            const card = cards[i];
-            try {
-                const paper = await fetchCrossrefPaper(category, rotIdx);
-                renderPaperCard(card, category, paper);
-            } catch (err) {
-                card.innerHTML = `
-                    <span class="paper-tag">${category.tag}</span>
-                    <p class="paper-title">Couldn't reach CrossRef right now.</p>
-                    <p class="paper-meta">Refresh to retry</p>
-                `;
-                card.classList.remove('paper-skeleton');
-            }
+        const rotIdx = rotationIndex();
+        const category = CATEGORIES[rotIdx % CATEGORIES.length];
+
+        try {
+            const paper = await fetchCrossrefPaper(category, rotIdx);
+            renderPaperCard(card, category, paper);
+        } catch (err) {
+            card.innerHTML = `
+                <span class="paper-tag">${category.tag}</span>
+                <p class="paper-title">Couldn't reach CrossRef right now.</p>
+                <p class="paper-meta">Refresh to retry</p>
+            `;
+            card.classList.remove('paper-skeleton');
+        }
+
+        // Older/unmigrated pages may still have extra skeleton cards
+        // in the markup — drop anything beyond the first so nothing
+        // is left stuck on "Loading…".
+        for (let i = 1; i < cards.length; i++) {
+            cards[i].remove();
         }
     }
 
     loadPapers();
+
+    /* ===========================================================
+       EQUATION / PROOF OF THE DAY
+       A hand-picked list of results spanning the fields relevant
+       to Hirak's work — real/functional analysis, variational
+       methods, PDEs, linear algebra, optimization, probability.
+       Rotates deterministically by date (same mechanism as the
+       paper feed), rendered client-side with KaTeX.
+    =========================================================== */
+    const EQUATIONS = [
+        {
+            field: 'Linear Algebra',
+            title: 'Cauchy–Schwarz Inequality',
+            statement: '|\\langle x, y \\rangle| \\le \\|x\\| \\, \\|y\\|, \\qquad \\forall\\, x, y \\in V',
+            proof: '\\text{For } t \\in \\mathbb{R}, \\text{ consider } 0 \\le \\|x - ty\\|^2 = \\|x\\|^2 - 2t\\langle x,y\\rangle + t^2\\|y\\|^2. \\\\[4pt] \\text{This is a quadratic in } t \\text{ that is always} \\ge 0, \\text{ so its discriminant is} \\le 0: \\\\[4pt] 4\\langle x,y\\rangle^2 - 4\\|x\\|^2\\|y\\|^2 \\le 0 \\;\\Longrightarrow\\; |\\langle x,y\\rangle| \\le \\|x\\|\\|y\\|.'
+        },
+        {
+            field: 'Real Analysis',
+            title: 'Banach Fixed Point Theorem',
+            statement: '\\text{If } (X,d) \\text{ is complete and } T:X\\to X \\text{ satisfies } d(Tx,Ty) \\le k\\,d(x,y), \\; k<1, \\\\[4pt] \\text{then } T \\text{ has a unique fixed point.}',
+            proof: '\\text{Fix } x_0, \\text{ define } x_{n+1}=Tx_n. \\text{ Then } d(x_{n+1},x_n) \\le k^n d(x_1,x_0), \\text{ so} \\\\[4pt] \\sum d(x_{n+1},x_n) \\text{ converges} \\Rightarrow (x_n) \\text{ is Cauchy} \\Rightarrow x_n \\to x^* \\text{ by completeness.} \\\\[4pt] \\text{Continuity of } T \\text{ gives } Tx^*=x^*. \\text{ Uniqueness: if } Ty^*=y^*, \\; d(x^*,y^*) \\le k\\,d(x^*,y^*) \\Rightarrow d=0.'
+        },
+        {
+            field: 'Variational Methods',
+            title: 'Euler–Lagrange Equation',
+            statement: '\\text{If } u \\text{ minimizes } J(u) = \\int_\\Omega F(x,u,\\nabla u)\\,dx, \\text{ then} \\\\[4pt] \\frac{\\partial F}{\\partial u} - \\nabla\\cdot\\frac{\\partial F}{\\partial \\nabla u} = 0 \\text{ in } \\Omega.',
+            proof: '\\text{Let } \\varphi \\in C_c^\\infty(\\Omega) \\text{ and } g(\\varepsilon) = J(u+\\varepsilon\\varphi). \\text{ Since } u \\text{ minimizes } J, \\; g\'(0)=0: \\\\[4pt] \\int_\\Omega \\left( \\frac{\\partial F}{\\partial u}\\varphi + \\frac{\\partial F}{\\partial \\nabla u}\\cdot\\nabla\\varphi \\right) dx = 0. \\\\[4pt] \\text{Integrate the second term by parts (} \\varphi=0 \\text{ on } \\partial\\Omega \\text{), then apply the fundamental lemma of the calculus of variations.}'
+        },
+        {
+            field: 'Optimization',
+            title: 'First-Order Optimality Condition',
+            statement: '\\text{If } f:\\mathbb{R}^n\\to\\mathbb{R} \\text{ is differentiable and } x^* \\text{ is a local minimizer,} \\\\[4pt] \\text{then } \\nabla f(x^*) = 0.',
+            proof: '\\text{Suppose } \\nabla f(x^*) \\ne 0. \\text{ Let } d = -\\nabla f(x^*). \\text{ By differentiability,} \\\\[4pt] f(x^*+td) = f(x^*) + t\\,\\nabla f(x^*)\\cdot d + o(t) = f(x^*) - t\\|\\nabla f(x^*)\\|^2 + o(t). \\\\[4pt] \\text{For small } t>0 \\text{ this is} < f(x^*), \\text{ contradicting local minimality.}'
+        },
+        {
+            field: 'Functional Analysis',
+            title: 'Riesz Representation (Hilbert Spaces)',
+            statement: '\\text{For every bounded linear functional } \\phi \\text{ on a Hilbert space } H, \\\\[4pt] \\exists!\\, y \\in H \\text{ such that } \\phi(x) = \\langle x, y \\rangle \\; \\forall x \\in H.',
+            proof: '\\text{Let } N=\\ker\\phi. \\text{ If } N=H, \\text{ take } y=0. \\text{ Otherwise } N^\\perp \\text{ is one-dimensional; pick unit } z \\in N^\\perp. \\\\[4pt] \\text{For any } x, \\; x - \\frac{\\phi(x)}{\\phi(z)}z \\in N, \\text{ so taking inner product with } z \\text{ gives } \\langle x,z\\rangle = \\frac{\\phi(x)}{\\phi(z)}. \\\\[4pt] \\text{Solving for } \\phi(x) \\text{ and setting } y = \\overline{\\phi(z)}\\,z \\text{ gives the representation; uniqueness follows since } \\langle x,y_1-y_2\\rangle=0 \\;\\forall x.'
+        },
+        {
+            field: 'PDEs',
+            title: 'Uniqueness for the Heat Equation',
+            statement: '\\text{On a bounded domain } \\Omega, \\text{ the IBVP } u_t = \\Delta u, \\; u|_{\\partial\\Omega}=0, \\; u(x,0)=u_0(x) \\\\[4pt] \\text{has at most one solution.}',
+            proof: '\\text{Let } u_1,u_2 \\text{ solve the problem and } w=u_1-u_2. \\text{ Define } E(t)=\\int_\\Omega w^2\\,dx \\ge 0. \\\\[4pt] E\'(t) = 2\\int_\\Omega w\\,w_t\\,dx = 2\\int_\\Omega w\\,\\Delta w\\,dx = -2\\int_\\Omega |\\nabla w|^2\\,dx \\le 0 \\quad (\\text{integration by parts, } w|_{\\partial\\Omega}=0). \\\\[4pt] \\text{So } E \\text{ is non-increasing with } E(0)=0 \\Rightarrow E(t)\\equiv 0 \\Rightarrow w \\equiv 0.'
+        },
+        {
+            field: 'Probability',
+            title: 'Markov\'s Inequality',
+            statement: '\\text{For } X \\ge 0 \\text{ and } a > 0: \\qquad P(X \\ge a) \\le \\frac{E[X]}{a}',
+            proof: 'E[X] = \\int_0^\\infty x\\,f(x)\\,dx \\ge \\int_a^\\infty x\\,f(x)\\,dx \\ge \\int_a^\\infty a\\,f(x)\\,dx = a\\,P(X \\ge a). \\\\[4pt] \\text{Divide both sides by } a.'
+        },
+        {
+            field: 'Real Analysis',
+            title: 'Dominated Convergence Theorem',
+            statement: '\\text{If } f_n \\to f \\text{ a.e. and } |f_n| \\le g \\in L^1, \\text{ then } \\int f_n \\, d\\mu \\to \\int f \\, d\\mu.',
+            proof: '\\text{Apply Fatou\'s lemma to } g - f_n \\ge 0 \\text{ and to } g + f_n \\ge 0: \\\\[4pt] \\int g\\,d\\mu - \\limsup\\int f_n\\,d\\mu \\le \\int (g-f)\\,d\\mu, \\qquad \\int g\\,d\\mu + \\liminf\\int f_n\\,d\\mu \\ge \\int (g+f)\\,d\\mu. \\\\[4pt] \\text{Rearranging gives } \\limsup \\int f_n \\le \\int f \\le \\liminf \\int f_n, \\text{ forcing the limit to exist and equal } \\int f.'
+        },
+        {
+            field: 'Optimization',
+            title: 'Convexity ⇒ Global Minimum',
+            statement: '\\text{If } f:\\mathbb{R}^n\\to\\mathbb{R} \\text{ is convex and differentiable,} \\\\[4pt] \\text{any critical point is a global minimizer.}',
+            proof: '\\text{Convexity gives, for all } x,y: \\quad f(y) \\ge f(x) + \\nabla f(x)\\cdot(y-x). \\\\[4pt] \\text{At a critical point } x^*, \\; \\nabla f(x^*)=0, \\text{ so } f(y) \\ge f(x^*) \\text{ for every } y.'
+        },
+        {
+            field: 'Linear Algebra',
+            title: 'Spectral Theorem (Symmetric Matrices)',
+            statement: '\\text{Every real symmetric matrix } A \\text{ is orthogonally diagonalizable: } A = Q\\Lambda Q^{T}.',
+            proof: '\\text{By induction on } n. \\text{ Let } \\lambda_1 \\text{ be an eigenvalue with unit eigenvector } v_1 \\text{ (exists since } \\mathbb{C} \\text{ is algebraically closed} \\\\[4pt] \\text{and eigenvalues of a symmetric matrix are real). Extend } v_1 \\text{ to an orthonormal basis; in this basis } A \\text{ takes block form} \\\\[4pt] \\begin{pmatrix}\\lambda_1 & 0 \\\\ 0 & A_{n-1}\\end{pmatrix} \\text{ with } A_{n-1} \\text{ symmetric. Apply the inductive hypothesis to } A_{n-1}.'
+        }
+    ];
+
+    function equationRotationIndex() {
+        const epoch = new Date('2025-01-01T00:00:00Z').getTime();
+        const days = Math.floor((Date.now() - epoch) / 86400000);
+        return days % EQUATIONS.length;
+    }
+
+    function renderKatex(el, tex, displayMode) {
+        // Our statement/proof strings use raw "\\" line breaks. "gathered"
+        // supports those but *centers* every line by definition — no CSS
+        // override can undo that. Use a left-aligned array instead.
+        const wrapped = `\\begin{array}{l}${tex}\\end{array}`;
+        if (window.katex) {
+            try {
+                katex.render(wrapped, el, { throwOnError: false, displayMode });
+                return;
+            } catch (e) { /* fall through */ }
+        }
+        el.textContent = tex;
+    }
+
+    function loadEquationOfTheDay() {
+        const card = document.getElementById('equationCard');
+        if (!card) return;
+        const eq = EQUATIONS[equationRotationIndex()];
+
+        document.getElementById('eqField').textContent = eq.field;
+        document.getElementById('eqTitle').textContent = eq.title;
+        renderKatex(document.getElementById('eqStatementPreview'), eq.statement, true);
+
+        card.addEventListener('click', () => {
+            document.getElementById('eqmField').textContent = eq.field;
+            document.getElementById('eqmTitle').textContent = eq.title;
+            renderKatex(document.getElementById('eqmStatement'), eq.statement, true);
+            renderKatex(document.getElementById('eqmProof'), eq.proof, true);
+            equationModal.open();
+        });
+    }
+
+    loadEquationOfTheDay();
 
     /* ===========================================================
        LIVE REPO COMMIT COUNT
@@ -350,6 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
             position: game.fen(),
             draggable: true,
             orientation: puzzleColor,
+            showNotation: false,
             pieceTheme: 'https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/{piece}.svg',
             onDrop: handleDrop
         });

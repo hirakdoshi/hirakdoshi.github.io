@@ -9,6 +9,7 @@
 <title>Research — Doshi H</title>
 <meta name="description" content="From optical flow to diffusion MRI: mathematics for images that move, and brains that heal.">
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
 </head>
@@ -232,18 +233,26 @@
 
     <aside class="side-col">
         <section class="research-block">
-            <p class="side-title">Read Along</p>
+            <p class="side-title">Research Paper of the Day</p>
             <p class="side-sub">Recent works from the literature, updated frequently via CrossRef.</p>
             <div id="paperList">
-                <div class="paper-card paper-skeleton"><span class="paper-tag">Mathematical Imaging</span><p class="paper-title">Loading…</p><p class="paper-meta">&nbsp;</p></div>
-                <div class="paper-card paper-skeleton"><span class="paper-tag">Motion / Optical Flow</span><p class="paper-title">Loading…</p><p class="paper-meta">&nbsp;</p></div>
-                <div class="paper-card paper-skeleton"><span class="paper-tag">Diffusion MRI</span><p class="paper-title">Loading…</p><p class="paper-meta">&nbsp;</p></div>
+                <div class="paper-card paper-skeleton"><span class="paper-tag">Loading…</span><p class="paper-title">Loading…</p><p class="paper-meta">&nbsp;</p></div>
             </div>
         </section>
 
+        <section class="equation-block">
+            <p class="side-title">Math Proof of the Day</p>
+            <p class="side-sub">Recall your math basics.</p>
+            <button class="equation-card" id="equationCard">
+                <span class="paper-tag" id="eqField">Loading…</span>
+                <p class="paper-title" id="eqTitle">Loading…</p>
+                <div class="eq-card-statement" id="eqStatementPreview"></div>
+            </button>
+        </section>
+
         <section class="puzzle-block">
-            <p class="side-title">Puzzle Break</p>
-            <p class="side-sub">Clear your head, take a break and solve today's Lichess puzzle.</p>
+            <p class="side-title">Chess Puzzle of the Day</p>
+            <p class="side-sub">Clear your head, take a break and solve today's lichess puzzle.</p>
             <div class="puzzle-card">
                 <p class="puzzle-turn" id="puzzleTurnLabel">Loading today's puzzle…</p>
                 <button class="btn" id="openPuzzleBtn">Solve the puzzle →</button>
@@ -273,6 +282,18 @@
         <p class="modal-abstract" id="pmAbstract">—</p>
         <div class="modal-keywords" id="pmKeywords"></div>
         <a class="btn" id="pmLink" href="#" target="_blank" rel="noopener">Read on publisher site →</a>
+    </div>
+</div>
+
+<!-- ============== EQUATION OF THE DAY MODAL ============== -->
+<div class="modal-overlay" id="equationModal">
+    <div class="modal-box">
+        <button class="modal-close" id="equationModalClose">&times;</button>
+        <span class="modal-tag" id="eqmField">Math</span>
+        <h3 id="eqmTitle">—</h3>
+        <div class="eq-statement" id="eqmStatement"></div>
+        <p class="eq-proof-label">Proof sketch</p>
+        <div class="eq-proof" id="eqmProof"></div>
     </div>
 </div>
 
@@ -317,6 +338,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

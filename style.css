@@ -719,6 +719,67 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .paper-skeleton .paper-title { background: var(--bg-raised-2); color: transparent; border-radius: 4px; height: 1.4em; }
 
 /* ===========================================================
+   Side column — Equation of the Day
+=========================================================== */
+.equation-block { margin-top: 34px; padding-top: 30px; border-top: 1px solid var(--line); }
+
+.equation-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px 18px;
+    cursor: pointer;
+    transition: border-color .18s var(--ease), transform .18s var(--ease), background .18s var(--ease);
+    font-family: inherit;
+}
+.equation-card:hover { border-color: var(--line-strong); transform: translateY(-1px); background: var(--bg-raised-2); }
+
+.eq-card-statement {
+    font-size: clamp(12.5px, 3vw, 14.5px);
+    color: var(--text-soft);
+    margin-top: 10px;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+}
+.eq-card-statement .katex-display { margin: 0; overflow-x: hidden; text-align: left !important; }
+.eq-card-statement .katex { white-space: normal; }
+
+.eq-statement {
+    font-size: clamp(14px, 3vw, 16px);
+    color: var(--text);
+    margin: 16px 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+}
+.eq-statement .katex-display { margin: 0; overflow-x: hidden; text-align: left !important; }
+.eq-statement .katex { white-space: normal; }
+
+.eq-proof-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-bright);
+    margin: 0 0 8px;
+}
+
+.eq-proof {
+    font-size: clamp(13px, 2.8vw, 15px);
+    color: var(--text-soft);
+    line-height: 1.7;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+}
+.eq-proof .katex-display { margin: 0 0 10px; overflow-x: hidden; text-align: left !important; }
+.eq-proof .katex { white-space: normal; }
+
+/* ===========================================================
    Side column — Chess puzzle
 =========================================================== */
 .puzzle-block { margin-top: 34px; padding-top: 30px; border-top: 1px solid var(--line); }
@@ -824,6 +885,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
 
 /* Puzzle modal specifics */
 #puzzleModal .modal-box { max-width: 460px; text-align: center; }
+#equationModal .modal-box { max-width: 680px; }
 #puzzleBoard { width: 100%; max-width: 380px; margin: 10px auto 16px; }
 .puzzle-status { font-family: var(--font-mono); font-size: 13px; color: var(--text-soft); min-height: 20px; margin: 0 0 14px; }
 .puzzle-status.correct { color: var(--live); }
@@ -872,10 +934,23 @@ strong { color: var(--accent-bright); font-weight: 600; }
 
 
 @media screen and (max-width: 680px) {
+    #equationModal .modal-box h3 { font-size: 1rem; }
     .header-toggle { display: block; }
     .nav-wrap { display: none; }
-    .nav-wrap.open { display: block; }
-    .main-nav { flex-direction: column; gap: 4px; }
+    .nav-wrap.open {
+        display: block;
+        width: 100%;
+        padding: 0 16px;
+        margin-top: 46px;
+    }
+    .main-nav {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .main-nav a { font-size: 0.92rem; }
     .nav-rule { display: none; }
 
     .post-footer-row, .article-share-row {
