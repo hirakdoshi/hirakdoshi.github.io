@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preload" href="../fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/ibm-plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
+<script>(function(){try{if(localStorage.getItem('site-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}})();</script>
+
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark light">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning Linux — IV: Permissions, Processes &amp; Disk Usage — Notebook — Hirak Doshi</title>
+<meta name="description" content="15 more essential Linux commands — chmod, chown, ps, kill, df, du, tar, curl, ssh, scp, alias, history, ln, and more — with real examples.">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="../style.css?v=6">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+</head>
+<body class="no-side-mobile">
+
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light/dark mode">☀️</button>
+<button class="header-toggle" id="headerToggle">menu</button>
+
+<header class="site-header">
+    <div class="nav-wrap" id="navWrap">
+        <ul class="main-nav">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../research.html">Research</a></li>
+            <li><a href="../teaching.html">Teaching</a></li>
+            <li><a href="../project.html">Projects</a></li>
+            <li><a href="../notebook.html" aria-current="page">Notebook</a></li>
+        </ul>
+    </div>
+    <div class="nav-rule"></div>
+</header>
+
+<div class="shell">
+    <main class="main-col">
+
+        <section class="block" style="border-top: none; padding-top: 0;">
+            <a class="article-back" href="../notebook.html">← Back to Notebook</a>
+            <div class="article-meta">
+                <span class="post-tag">Linux</span>
+            </div>
+            <h1 class="about-name" style="font-size: clamp(1.7rem, 1.4rem + 1.6vw, 2.3rem); margin-bottom: 6px;">Learning Linux — IV</h1>
+            <p class="about-titles" style="margin-bottom: 0;">Permissions, processes &amp; disk usage</p>
+        </section>
+
+        <section class="block" style="border-top: none; padding-top: 0; padding-bottom: 0;">
+            <div class="article-share-row">
+                <span class="post-published">Published on August 28, 2026 · <span id="readingTime">…</span></span>
+                <div class="post-share">
+                    <button class="share-link copy-link-btn" type="button" data-share-url="https://hirakdoshi.github.io/blog_posts/learning-linux-permissions-processes.html">Share →</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="block article-body" style="border-top: none; padding-top: 0;">
+            <p>Part III covered moving around and working with files. This one picks up where that left off — who can touch a file, what's actually running on the machine, how much space things are taking up, and how to reach another machine over the network.</p>
+
+            <h2>chmod — change permissions</h2>
+            <p>Every file has read, write, and execute permissions for three groups: the owner, the group, and everyone else.</p>
+            <pre><code>ls -l script.sh</code></pre>
+            <pre class="output"><code>-rw-r--r-- 1 user user 128 Aug 28 10:00 script.sh</code></pre>
+            <p>That <code>rw-r--r--</code> breaks into three chunks of three: owner (read/write), group (read only), others (read only). To make it executable for the owner:</p>
+            <pre><code>chmod u+x script.sh
+ls -l script.sh</code></pre>
+            <pre class="output"><code>-rwxr--r-- 1 user user 128 Aug 28 10:00 script.sh</code></pre>
+            <p>You'll also see the numeric form — <code>chmod 755 script.sh</code> — where each digit is a sum of read(4)+write(2)+execute(1) for owner, group, others respectively. <code>755</code> means owner gets all three, group and others get read+execute only.</p>
+
+            <h2>chown — change ownership</h2>
+            <pre><code>sudo chown user:user script.sh</code></pre>
+            <p>Sets both the owning user and group in one shot (<code>user:group</code>). You'll mostly need this after copying files in as root, or fixing permissions on something pulled from a shared drive — files that technically belong to someone else on the system.</p>
+
+            <h2>grep — search inside text</h2>
+            <pre><code>grep "error" server.log</code></pre>
+            <pre class="output"><code>[2026-08-28 09:14:02] ERROR: connection refused
+[2026-08-28 09:22:41] ERROR: timeout waiting for response</code></pre>
+            <p>Prints every line containing the search term. Add <code>-i</code> to ignore case, <code>-r</code> to search recursively through every file in a folder, and <code>-n</code> to show line numbers alongside each match:</p>
+            <pre><code>grep -rn "TODO" ~/projects/myapp</code></pre>
+            <pre class="output"><code>src/main.py:42:# TODO: handle empty input
+src/utils.py:15:# TODO: this is a hack</code></pre>
+
+            <h2>ps — see what's running</h2>
+            <pre><code>ps aux</code></pre>
+            <pre class="output"><code>USER   PID  %CPU %MEM    VSZ   RSS TTY   STAT START   TIME COMMAND
+user     1   0.0  0.1  22528  3200 ?     Ss   09:00   0:01 /sbin/init
+user   842   0.1  0.4 412300 32100 ?     Sl   09:02   0:03 gnome-shell
+user  1190   2.3  1.8 891200 148000 ?    Sl   09:15   1:42 firefox</code></pre>
+            <p><code>a</code> shows processes from all users, <code>u</code> gives the detailed columns (CPU%, memory%, command), <code>x</code> includes processes not attached to a terminal. The PID column — process ID — is what you'll need for the next command.</p>
+
+            <h2>top — watch it live</h2>
+            <pre><code>top</code></pre>
+            <p>Same idea as <code>ps</code> but refreshes continuously, sorted by CPU usage by default. Press <code>q</code> to quit. If you have it installed, <code>htop</code> is the friendlier, color-coded version of the same thing — worth installing if it's not already there.</p>
+
+            <h2>kill — stop a process</h2>
+            <pre><code>kill 1190</code></pre>
+            <p>Sends a termination signal to the process with that PID (grab it from <code>ps</code> or <code>top</code>). If it doesn't respond — some processes ignore the polite request — force it:</p>
+            <pre><code>kill -9 1190</code></pre>
+            <p><code>-9</code> is <code>SIGKILL</code>, which the process can't ignore or clean up after. Use it as a last resort; a plain <code>kill</code> gives the process a chance to save its state and exit properly first.</p>
+
+            <h2>df — disk space, by filesystem</h2>
+            <pre><code>df -h</code></pre>
+            <pre class="output"><code>Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2        70G   42G   25G  63% /
+/dev/sda4        74G   61G   9.5G  87% /media/storage1</code></pre>
+            <p><code>-h</code> means "human-readable" — GB and MB instead of raw byte counts. This is the first thing to check when something complains the disk is full.</p>
+
+            <h2>du — disk usage, by folder</h2>
+            <pre><code>du -sh ~/Downloads</code></pre>
+            <pre class="output"><code>4.2G    /home/user/Downloads</code></pre>
+            <p><code>-s</code> summarizes into one total instead of listing every file inside; <code>-h</code> again means human-readable. Where <code>df</code> tells you a drive is full, <code>du</code> tells you which folder is actually eating the space — run it on a few candidate folders to narrow it down.</p>
+
+            <h2>tar — archive and compress</h2>
+            <pre><code>tar -czvf backup.tar.gz project/</code></pre>
+            <p><code>c</code> creates an archive, <code>z</code> compresses it with gzip, <code>v</code> prints each file as it's added (verbose), <code>f</code> names the output file. To reverse it:</p>
+            <pre><code>tar -xzvf backup.tar.gz</code></pre>
+            <p><code>x</code> extracts instead of creating. The <code>zvf</code> part stays the same either direction — it's really just <code>c</code> vs <code>x</code> that flips.</p>
+
+            <h2>curl — talk to a URL</h2>
+            <pre><code>curl -O https://example.com/file.zip</code></pre>
+            <p><code>-O</code> saves the file under its original name instead of dumping its contents to the terminal. Also useful for quickly checking what an API endpoint returns, without opening a browser:</p>
+            <pre><code>curl https://api.example.com/status</code></pre>
+
+            <h2>ssh — log into another machine</h2>
+            <pre><code>ssh user@192.168.1.20</code></pre>
+            <p>Opens a remote shell on that machine, prompting for a password (or using your SSH key if one's set up). Once connected, everything you type runs on the remote machine, not your own, until you <code>exit</code>.</p>
+
+            <h2>scp — copy files over SSH</h2>
+            <pre><code>scp report.pdf user@192.168.1.20:~/Documents/</code></pre>
+            <p>Same permission model as <code>ssh</code>, just moving a file instead of opening a shell. Reverse the order to pull a file <em>from</em> the remote machine instead:</p>
+            <pre><code>scp user@192.168.1.20:~/Documents/report.pdf .</code></pre>
+            <p>The trailing <code>.</code> means "save it here, in my current folder."</p>
+
+            <h2>alias — shortcuts for long commands</h2>
+            <pre><code>alias ll='ls -la'
+ll</code></pre>
+            <pre class="output"><code>drwxr-xr-x 12 user user 4096 Aug 16 01:29 .
+drwxr-xr-x  3 root root 4096 Sep 28  2025 ..
+drwxr-xr-x  4 user user 4096 Aug 21 21:44 Desktop</code></pre>
+            <p>Lasts only for the current terminal session unless you add it to <code>~/.bashrc</code> — do that once and it's there permanently, every time you open a new terminal.</p>
+
+            <h2>history — what did I just type</h2>
+            <pre><code>history | tail -n 5</code></pre>
+            <pre class="output"><code>  501  cd ~/projects
+  502  git status
+  503  git add .
+  504  git commit -m "fix bug"
+  505  history</code></pre>
+            <p>Every command gets a number. Re-run any of them with <code>!</code> followed by that number — <code>!502</code> re-runs <code>git status</code> — faster than retyping or scrolling back through terminal output.</p>
+
+            <h2>ln — create a link</h2>
+            <pre><code>ln -s ~/projects/config.yaml ~/config.yaml</code></pre>
+            <p><code>-s</code> makes a symbolic link — a pointer to the original file, shown with an arrow in <code>ls -l</code>:</p>
+            <pre><code>ls -l ~/config.yaml</code></pre>
+            <pre class="output"><code>lrwxrwxrwx 1 user user 32 Aug 28 10:05 config.yaml -> /home/user/projects/config.yaml</code></pre>
+            <p>Edit the link, and you're actually editing the original file — useful for keeping one real copy of a config while making it accessible from several places at once, without duplicating it.</p>
+
+            <p>Between this and Part III, that's 30 commands — enough to navigate a machine, manage files and permissions, keep an eye on what's running, and reach another machine over the network. Everything past this point tends to be command-specific rather than foundational, and worth looking up as it comes up rather than memorizing in advance.</p>
+
+        </section>
+    </main>
+
+    <aside class="side-col">
+        <section class="research-block">
+            <p class="side-title">Research Paper of the Day</p>
+            <p class="side-sub">Recent works from the literature, updated frequently via CrossRef.</p>
+            <div id="paperList">
+                <div class="paper-card paper-skeleton"><span class="paper-tag">Loading…</span><p class="paper-title">Loading…</p><p class="paper-meta">&nbsp;</p></div>
+            </div>
+        </section>
+
+        <section class="equation-block">
+            <p class="side-title">Math Proof of the Day</p>
+            <p class="side-sub">Recall your math basics.</p>
+            <button class="equation-card" id="equationCard">
+                <span class="paper-tag" id="eqField">Loading…</span>
+                <p class="paper-title" id="eqTitle">Loading…</p>
+                <div class="eq-card-statement" id="eqStatementPreview"></div>
+            </button>
+        </section>
+
+        <section class="puzzle-block">
+            <p class="side-title">Chess Puzzle of the Day</p>
+            <p class="side-sub">Clear your head, take a break and solve today's lichess puzzle.</p>
+            <div class="puzzle-card">
+                <p class="puzzle-turn" id="puzzleTurnLabel">Loading today's puzzle…</p>
+                <button class="btn" id="openPuzzleBtn">Solve the puzzle →</button>
+            </div>
+        </section>
+    </aside>
+</div>
+
+<footer class="site-footer">
+    <p>&copy; Hirak Doshi <span id="year"></span></p>
+    <button class="footer-contact" type="button" id="contactTrigger">Contact me →</button>
+    <div class="footer-socials">
+        <a href="https://twitter.com/beinghd16/" target="_blank" rel="noopener">X</a>
+        <a href="https://github.com/hirakdoshi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/hirak-doshi/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+</footer>
+
+<div class="modal-overlay" id="paperModal">
+    <div class="modal-box">
+        <button class="modal-close" id="paperModalClose">&times;</button>
+        <span class="modal-tag" id="pmTag">Math</span>
+        <h3 id="pmTitle">—</h3>
+        <p class="modal-meta"><strong>Authors:</strong> <span id="pmAuthors">—</span></p>
+        <p class="modal-meta"><strong>Journal:</strong> <span id="pmJournal">—</span></p>
+        <p class="modal-meta"><strong>Year:</strong> <span id="pmYear">—</span></p>
+        <p class="modal-abstract" id="pmAbstract">—</p>
+        <div class="modal-keywords" id="pmKeywords"></div>
+        <a class="btn" id="pmLink" href="#" target="_blank" rel="noopener">Read on publisher site →</a>
+    </div>
+</div>
+
+<!-- ============== EQUATION OF THE DAY MODAL ============== -->
+<div class="modal-overlay" id="equationModal">
+    <div class="modal-box">
+        <button class="modal-close" id="equationModalClose">&times;</button>
+        <span class="modal-tag" id="eqmField">Math</span>
+        <h3 id="eqmTitle">—</h3>
+        <div class="eq-statement" id="eqmStatement"></div>
+        <p class="eq-proof-label">Proof sketch</p>
+        <div class="eq-proof" id="eqmProof"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="puzzleModal">
+    <div class="modal-box">
+        <button class="modal-close" id="puzzleModalClose">&times;</button>
+        <span class="modal-tag">Lichess Puzzle of the Day</span>
+        <h3 id="pzTurnLabel">—</h3>
+        <div id="puzzleBoard"></div>
+        <p class="puzzle-status" id="puzzleStatus">Make your move — drag a piece to begin.</p>
+        <div class="puzzle-actions">
+            <button class="btn btn-ghost" id="puzzleResetBtn">Reset</button>
+            <a class="btn" id="puzzleAnalyzeBtn" href="#" target="_blank" rel="noopener">Analyze on Lichess →</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="contactModal">
+    <div class="modal-box">
+        <button class="modal-close" id="contactModalClose">&times;</button>
+        <span class="modal-tag">Get in touch</span>
+        <h3>Send a message</h3>
+        <form class="contact-form" id="contactForm">
+            <div class="form-row">
+                <label for="cf-name">Name</label>
+                <input type="text" id="cf-name" name="name" required>
+            </div>
+            <div class="form-row">
+                <label for="cf-email">Email</label>
+                <input type="email" id="cf-email" name="email" required>
+            </div>
+            <div class="form-row">
+                <label for="cf-message">Message</label>
+                <textarea id="cf-message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn" id="contactSubmitBtn">Send message →</button>
+            <p class="form-status" id="contactFormStatus"></p>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="../script.js?v=4"></script>
+</body>
+</html>
