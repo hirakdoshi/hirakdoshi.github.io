@@ -1,4 +1,63 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+/* Fonts self-hosted from /fonts (originally IBM Plex Mono/Sans and
+   Anton via Google Fonts) — removes the extra DNS lookup + round
+   trip to fonts.googleapis.com/fonts.gstatic.com that every visitor
+   paid before the font file could even start downloading. */
+@font-face {
+    font-family: 'Anton';
+    src: url('fonts/anton-400.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-400.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-600.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('fonts/ibm-plex-sans-400.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('fonts/ibm-plex-sans-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('fonts/ibm-plex-sans-600.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
 
 :root {
     --bg: #162126;
@@ -93,7 +152,6 @@ body {
     font-size: 15px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
 }
 
 img { max-width: 100%; display: block; }
@@ -387,6 +445,35 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .about-titles .sep { color: var(--text-faint); margin: 0 6px; }
 
 .about-desc { color: var(--text-soft); font-size: 14.5px; max-width: none; margin: 0; text-align: justify; text-justify: inter-word; }
+
+/* ===========================================================
+   Notebook — tag filter pills
+=========================================================== */
+.tag-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+.tag-pill {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: border-color .15s var(--ease), color .15s var(--ease), background .15s var(--ease);
+}
+.tag-pill:hover { border-color: var(--line-strong); color: var(--text); }
+.tag-pill.active {
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
+}
 
 /* ===========================================================
    Section shell (generic left-column blocks)
@@ -738,26 +825,39 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .equation-card:hover { border-color: var(--line-strong); transform: translateY(-1px); background: var(--bg-raised-2); }
 
 .eq-card-statement {
-    font-size: clamp(12.5px, 3vw, 14.5px);
+    font-size: 13px;
     color: var(--text-soft);
-    margin-top: 10px;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-wrap: break-word;
+    line-height: 1.6;
+    margin: 10px 0 0;
 }
-.eq-card-statement .katex-display { margin: 0; overflow-x: hidden; text-align: left !important; }
-.eq-card-statement .katex { white-space: normal; }
 
+/* Statement and proof in the modal — plain wrapping text with
+   small inline KaTeX spans mixed in, so it reflows exactly like
+   any other paragraph at any screen width. */
+.eq-statement, .eq-proof {
+    line-height: 1.7;
+    overflow-wrap: break-word;
+    text-align: justify;
+    text-justify: inter-word;
+}
 .eq-statement {
-    font-size: clamp(14px, 3vw, 16px);
+    font-size: 15.5px;
     color: var(--text);
     margin: 16px 0;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-wrap: break-word;
 }
-.eq-statement .katex-display { margin: 0; overflow-x: hidden; text-align: left !important; }
-.eq-statement .katex { white-space: normal; }
+.eq-proof {
+    font-size: 15.5px;
+    color: var(--text);
+}
+.eq-statement .katex-display, .eq-proof .katex-display {
+    margin: 8px 0;
+    text-align: left;
+    overflow-x: hidden;
+}
+.eq-statement .katex-display > .katex, .eq-proof .katex-display > .katex {
+    max-width: 100%;
+}
+.eq-statement .katex, .eq-proof .katex { font-size: clamp(0.85em, 3.2vw, 1em); white-space: normal; }
 
 .eq-proof-label {
     font-family: var(--font-mono);
@@ -767,17 +867,6 @@ strong { color: var(--accent-bright); font-weight: 600; }
     color: var(--accent-bright);
     margin: 0 0 8px;
 }
-
-.eq-proof {
-    font-size: clamp(13px, 2.8vw, 15px);
-    color: var(--text-soft);
-    line-height: 1.7;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-wrap: break-word;
-}
-.eq-proof .katex-display { margin: 0 0 10px; overflow-x: hidden; text-align: left !important; }
-.eq-proof .katex { white-space: normal; }
 
 /* ===========================================================
    Side column — Chess puzzle
@@ -885,7 +974,10 @@ strong { color: var(--accent-bright); font-weight: 600; }
 
 /* Puzzle modal specifics */
 #puzzleModal .modal-box { max-width: 460px; text-align: center; }
-#equationModal .modal-box { max-width: 680px; }
+#equationModal .modal-box { max-width: 680px; max-height: 92vh; }
+#equationModal .modal-box, #equationModal .eq-statement, #equationModal .eq-proof {
+    overflow-x: hidden;
+}
 #puzzleBoard { width: 100%; max-width: 380px; margin: 10px auto 16px; }
 .puzzle-status { font-family: var(--font-mono); font-size: 13px; color: var(--text-soft); min-height: 20px; margin: 0 0 14px; }
 .puzzle-status.correct { color: var(--live); }

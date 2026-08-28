@@ -234,62 +234,72 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             field: 'Linear Algebra',
             title: 'Cauchy–Schwarz Inequality',
-            statement: '|\\langle x, y \\rangle| \\le \\|x\\| \\, \\|y\\|, \\qquad \\forall\\, x, y \\in V',
-            proof: '\\text{For } t \\in \\mathbb{R}, \\text{ consider } 0 \\le \\|x - ty\\|^2 = \\|x\\|^2 - 2t\\langle x,y\\rangle + t^2\\|y\\|^2. \\\\[4pt] \\text{This is a quadratic in } t \\text{ that is always} \\ge 0, \\text{ so its discriminant is} \\le 0: \\\\[4pt] 4\\langle x,y\\rangle^2 - 4\\|x\\|^2\\|y\\|^2 \\le 0 \\;\\Longrightarrow\\; |\\langle x,y\\rangle| \\le \\|x\\|\\|y\\|.'
+            teaser: 'The inner product of two vectors is bounded by the product of their lengths.',
+            statement: 'For all vectors \\(x, y\\) in an inner product space \\(V\\): \\[ |\\langle x, y \\rangle| \\le \\|x\\|\\,\\|y\\| \\]',
+            proof: 'For any real \\(t\\), \\(0 \\le \\|x - ty\\|^2 = \\|x\\|^2 - 2t\\langle x,y\\rangle + t^2\\|y\\|^2\\). This is a quadratic in \\(t\\) that is always non-negative, so its discriminant satisfies \\(4\\langle x,y\\rangle^2 - 4\\|x\\|^2\\|y\\|^2 \\le 0\\), which is exactly the inequality.'
         },
         {
             field: 'Real Analysis',
             title: 'Banach Fixed Point Theorem',
-            statement: '\\text{If } (X,d) \\text{ is complete and } T:X\\to X \\text{ satisfies } d(Tx,Ty) \\le k\\,d(x,y), \\; k<1, \\\\[4pt] \\text{then } T \\text{ has a unique fixed point.}',
-            proof: '\\text{Fix } x_0, \\text{ define } x_{n+1}=Tx_n. \\text{ Then } d(x_{n+1},x_n) \\le k^n d(x_1,x_0), \\text{ so} \\\\[4pt] \\sum d(x_{n+1},x_n) \\text{ converges} \\Rightarrow (x_n) \\text{ is Cauchy} \\Rightarrow x_n \\to x^* \\text{ by completeness.} \\\\[4pt] \\text{Continuity of } T \\text{ gives } Tx^*=x^*. \\text{ Uniqueness: if } Ty^*=y^*, \\; d(x^*,y^*) \\le k\\,d(x^*,y^*) \\Rightarrow d=0.'
+            teaser: 'A contraction on a complete space always has exactly one fixed point.',
+            statement: 'If \\((X,d)\\) is a complete metric space and \\(T:X\\to X\\) satisfies \\(d(Tx,Ty) \\le k\\,d(x,y)\\) for some \\(k<1\\), then \\(T\\) has a unique fixed point.',
+            proof: 'Starting from any \\(x_0\\), define \\(x_{n+1} = Tx_n\\). Since \\(d(x_{n+1},x_n) \\le k^n d(x_1,x_0)\\), the sequence is Cauchy and so converges to some \\(x^*\\) by completeness. Continuity of \\(T\\) gives \\(Tx^* = x^*\\). If \\(y^*\\) is another fixed point, \\(d(x^*,y^*) \\le k\\,d(x^*,y^*)\\) forces \\(d(x^*,y^*)=0\\).'
         },
         {
             field: 'Variational Methods',
             title: 'Euler–Lagrange Equation',
-            statement: '\\text{If } u \\text{ minimizes } J(u) = \\int_\\Omega F(x,u,\\nabla u)\\,dx, \\text{ then} \\\\[4pt] \\frac{\\partial F}{\\partial u} - \\nabla\\cdot\\frac{\\partial F}{\\partial \\nabla u} = 0 \\text{ in } \\Omega.',
-            proof: '\\text{Let } \\varphi \\in C_c^\\infty(\\Omega) \\text{ and } g(\\varepsilon) = J(u+\\varepsilon\\varphi). \\text{ Since } u \\text{ minimizes } J, \\; g\'(0)=0: \\\\[4pt] \\int_\\Omega \\left( \\frac{\\partial F}{\\partial u}\\varphi + \\frac{\\partial F}{\\partial \\nabla u}\\cdot\\nabla\\varphi \\right) dx = 0. \\\\[4pt] \\text{Integrate the second term by parts (} \\varphi=0 \\text{ on } \\partial\\Omega \\text{), then apply the fundamental lemma of the calculus of variations.}'
+            teaser: 'The equation any minimizer of an energy functional must satisfy.',
+            statement: 'If \\(u\\) minimizes \\(J(u) = \\int_\\Omega F(x,u,\\nabla u)\\,dx\\), then \\(u\\) satisfies \\[ \\frac{\\partial F}{\\partial u} - \\nabla\\cdot\\frac{\\partial F}{\\partial \\nabla u} = 0 \\] throughout \\(\\Omega\\).',
+            proof: 'For a test function \\(\\varphi\\) vanishing on \\(\\partial\\Omega\\), let \\(g(\\varepsilon) = J(u+\\varepsilon\\varphi)\\). Since \\(u\\) minimizes \\(J\\), \\(g\'(0) = 0\\), and integrating by parts along with the fundamental lemma of the calculus of variations gives the equation above.'
         },
         {
             field: 'Optimization',
             title: 'First-Order Optimality Condition',
-            statement: '\\text{If } f:\\mathbb{R}^n\\to\\mathbb{R} \\text{ is differentiable and } x^* \\text{ is a local minimizer,} \\\\[4pt] \\text{then } \\nabla f(x^*) = 0.',
-            proof: '\\text{Suppose } \\nabla f(x^*) \\ne 0. \\text{ Let } d = -\\nabla f(x^*). \\text{ By differentiability,} \\\\[4pt] f(x^*+td) = f(x^*) + t\\,\\nabla f(x^*)\\cdot d + o(t) = f(x^*) - t\\|\\nabla f(x^*)\\|^2 + o(t). \\\\[4pt] \\text{For small } t>0 \\text{ this is} < f(x^*), \\text{ contradicting local minimality.}'
+            teaser: 'At a local minimum, the gradient of a smooth function must vanish.',
+            statement: 'If \\(f:\\mathbb{R}^n\\to\\mathbb{R}\\) is differentiable and \\(x^*\\) is a local minimizer, then \\(\\nabla f(x^*) = 0\\).',
+            proof: 'If \\(\\nabla f(x^*) \\ne 0\\), moving in the direction \\(d = -\\nabla f(x^*)\\) gives \\(f(x^*+td) = f(x^*) - t\\|\\nabla f(x^*)\\|^2 + o(t)\\), which is smaller than \\(f(x^*)\\) for small \\(t>0\\) — contradicting local minimality.'
         },
         {
             field: 'Functional Analysis',
-            title: 'Riesz Representation (Hilbert Spaces)',
-            statement: '\\text{For every bounded linear functional } \\phi \\text{ on a Hilbert space } H, \\\\[4pt] \\exists!\\, y \\in H \\text{ such that } \\phi(x) = \\langle x, y \\rangle \\; \\forall x \\in H.',
-            proof: '\\text{Let } N=\\ker\\phi. \\text{ If } N=H, \\text{ take } y=0. \\text{ Otherwise } N^\\perp \\text{ is one-dimensional; pick unit } z \\in N^\\perp. \\\\[4pt] \\text{For any } x, \\; x - \\frac{\\phi(x)}{\\phi(z)}z \\in N, \\text{ so taking inner product with } z \\text{ gives } \\langle x,z\\rangle = \\frac{\\phi(x)}{\\phi(z)}. \\\\[4pt] \\text{Solving for } \\phi(x) \\text{ and setting } y = \\overline{\\phi(z)}\\,z \\text{ gives the representation; uniqueness follows since } \\langle x,y_1-y_2\\rangle=0 \\;\\forall x.'
+            title: 'Riesz Representation Theorem',
+            teaser: 'Every bounded linear functional on a Hilbert space comes from an inner product.',
+            statement: 'For every bounded linear functional \\(\\phi\\) on a Hilbert space \\(H\\), there is a unique \\(y \\in H\\) such that \\(\\phi(x) = \\langle x, y \\rangle\\) for all \\(x \\in H\\).',
+            proof: 'Let \\(N = \\ker\\phi\\). If \\(N = H\\), take \\(y=0\\). Otherwise pick a unit vector \\(z\\) orthogonal to \\(N\\); every \\(x\\) satisfies \\(x - \\frac{\\phi(x)}{\\phi(z)}z \\in N\\), and taking an inner product with \\(z\\) gives the representation with \\(y = \\overline{\\phi(z)}\\,z\\).'
         },
         {
             field: 'PDEs',
             title: 'Uniqueness for the Heat Equation',
-            statement: '\\text{On a bounded domain } \\Omega, \\text{ the IBVP } u_t = \\Delta u, \\; u|_{\\partial\\Omega}=0, \\; u(x,0)=u_0(x) \\\\[4pt] \\text{has at most one solution.}',
-            proof: '\\text{Let } u_1,u_2 \\text{ solve the problem and } w=u_1-u_2. \\text{ Define } E(t)=\\int_\\Omega w^2\\,dx \\ge 0. \\\\[4pt] E\'(t) = 2\\int_\\Omega w\\,w_t\\,dx = 2\\int_\\Omega w\\,\\Delta w\\,dx = -2\\int_\\Omega |\\nabla w|^2\\,dx \\le 0 \\quad (\\text{integration by parts, } w|_{\\partial\\Omega}=0). \\\\[4pt] \\text{So } E \\text{ is non-increasing with } E(0)=0 \\Rightarrow E(t)\\equiv 0 \\Rightarrow w \\equiv 0.'
+            teaser: 'A heat equation with fixed boundary and initial data has at most one solution.',
+            statement: 'On a bounded domain \\(\\Omega\\), the problem \\(u_t = \\Delta u\\) with \\(u=0\\) on \\(\\partial\\Omega\\) and given initial data has at most one solution.',
+            proof: 'If \\(u_1, u_2\\) are two solutions, let \\(w = u_1 - u_2\\) and \\(E(t) = \\int_\\Omega w^2\\,dx\\). Then \\(E\'(t) = -2\\int_\\Omega |\\nabla w|^2\\,dx \\le 0\\), so \\(E\\) is non-increasing from \\(E(0)=0\\), forcing \\(w \\equiv 0\\).'
         },
         {
             field: 'Probability',
             title: 'Markov\'s Inequality',
-            statement: '\\text{For } X \\ge 0 \\text{ and } a > 0: \\qquad P(X \\ge a) \\le \\frac{E[X]}{a}',
-            proof: 'E[X] = \\int_0^\\infty x\\,f(x)\\,dx \\ge \\int_a^\\infty x\\,f(x)\\,dx \\ge \\int_a^\\infty a\\,f(x)\\,dx = a\\,P(X \\ge a). \\\\[4pt] \\text{Divide both sides by } a.'
+            teaser: 'A simple bound on how likely a non-negative random variable is to be large.',
+            statement: 'For a non-negative random variable \\(X\\) and \\(a>0\\): \\[ P(X \\ge a) \\le \\frac{E[X]}{a} \\]',
+            proof: 'Since \\(E[X] \\ge \\int_a^\\infty x f(x)\\,dx \\ge a\\,P(X\\ge a)\\), dividing both sides by \\(a\\) gives the result.'
         },
         {
             field: 'Real Analysis',
             title: 'Dominated Convergence Theorem',
-            statement: '\\text{If } f_n \\to f \\text{ a.e. and } |f_n| \\le g \\in L^1, \\text{ then } \\int f_n \\, d\\mu \\to \\int f \\, d\\mu.',
-            proof: '\\text{Apply Fatou\'s lemma to } g - f_n \\ge 0 \\text{ and to } g + f_n \\ge 0: \\\\[4pt] \\int g\\,d\\mu - \\limsup\\int f_n\\,d\\mu \\le \\int (g-f)\\,d\\mu, \\qquad \\int g\\,d\\mu + \\liminf\\int f_n\\,d\\mu \\ge \\int (g+f)\\,d\\mu. \\\\[4pt] \\text{Rearranging gives } \\limsup \\int f_n \\le \\int f \\le \\liminf \\int f_n, \\text{ forcing the limit to exist and equal } \\int f.'
+            teaser: 'A pointwise limit under an integrable bound can be pulled inside the integral.',
+            statement: 'If \\(f_n \\to f\\) almost everywhere and \\(|f_n| \\le g\\) for some integrable \\(g\\), then \\(\\int f_n\\,d\\mu \\to \\int f\\,d\\mu\\).',
+            proof: 'Applying Fatou\'s lemma to \\(g-f_n\\) and to \\(g+f_n\\), and combining the two resulting inequalities, forces \\(\\limsup \\int f_n \\le \\int f \\le \\liminf \\int f_n\\) — so the limit exists and equals \\(\\int f\\).'
         },
         {
             field: 'Optimization',
-            title: 'Convexity ⇒ Global Minimum',
-            statement: '\\text{If } f:\\mathbb{R}^n\\to\\mathbb{R} \\text{ is convex and differentiable,} \\\\[4pt] \\text{any critical point is a global minimizer.}',
-            proof: '\\text{Convexity gives, for all } x,y: \\quad f(y) \\ge f(x) + \\nabla f(x)\\cdot(y-x). \\\\[4pt] \\text{At a critical point } x^*, \\; \\nabla f(x^*)=0, \\text{ so } f(y) \\ge f(x^*) \\text{ for every } y.'
+            title: 'Convexity Implies Global Minimum',
+            teaser: 'For a convex function, any critical point is automatically the global minimum.',
+            statement: 'If \\(f:\\mathbb{R}^n\\to\\mathbb{R}\\) is convex and differentiable, any critical point of \\(f\\) is a global minimizer.',
+            proof: 'Convexity gives \\(f(y) \\ge f(x) + \\nabla f(x)\\cdot(y-x)\\) for all \\(x,y\\). At a critical point \\(x^*\\), \\(\\nabla f(x^*)=0\\), so \\(f(y) \\ge f(x^*)\\) for every \\(y\\).'
         },
         {
             field: 'Linear Algebra',
-            title: 'Spectral Theorem (Symmetric Matrices)',
-            statement: '\\text{Every real symmetric matrix } A \\text{ is orthogonally diagonalizable: } A = Q\\Lambda Q^{T}.',
-            proof: '\\text{By induction on } n. \\text{ Let } \\lambda_1 \\text{ be an eigenvalue with unit eigenvector } v_1 \\text{ (exists since } \\mathbb{C} \\text{ is algebraically closed} \\\\[4pt] \\text{and eigenvalues of a symmetric matrix are real). Extend } v_1 \\text{ to an orthonormal basis; in this basis } A \\text{ takes block form} \\\\[4pt] \\begin{pmatrix}\\lambda_1 & 0 \\\\ 0 & A_{n-1}\\end{pmatrix} \\text{ with } A_{n-1} \\text{ symmetric. Apply the inductive hypothesis to } A_{n-1}.'
+            title: 'Spectral Theorem for Symmetric Matrices',
+            teaser: 'Every real symmetric matrix can be diagonalized by an orthogonal change of basis.',
+            statement: 'Every real symmetric matrix \\(A\\) can be written as \\(A = Q\\Lambda Q^{T}\\) for some orthogonal matrix \\(Q\\) and diagonal matrix \\(\\Lambda\\).',
+            proof: 'By induction on \\(n\\): a symmetric matrix always has a real eigenvalue \\(\\lambda_1\\) with a unit eigenvector \\(v_1\\); extending \\(v_1\\) to an orthonormal basis reduces \\(A\\) to block form, and the inductive hypothesis applies to the remaining block.'
         }
     ];
 
@@ -299,18 +309,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return days % EQUATIONS.length;
     }
 
-    function renderKatex(el, tex, displayMode) {
-        // Our statement/proof strings use raw "\\" line breaks. "gathered"
-        // supports those but *centers* every line by definition — no CSS
-        // override can undo that. Use a left-aligned array instead.
-        const wrapped = `\\begin{array}{l}${tex}\\end{array}`;
-        if (window.katex) {
-            try {
-                katex.render(wrapped, el, { throwOnError: false, displayMode });
-                return;
-            } catch (e) { /* fall through */ }
+    // Renders a string containing plain text mixed with inline
+    // \( ... \) and display \[ ... \] KaTeX delimiters. This lets
+    // math sit inside ordinary sentences that wrap naturally at
+    // any screen width — no manual line breaks, no overflow.
+    function renderMixedMath(el, html) {
+        el.innerHTML = html;
+        if (window.renderMathInElement) {
+            renderMathInElement(el, {
+                delimiters: [
+                    { left: '\\[', right: '\\]', display: true },
+                    { left: '\\(', right: '\\)', display: false }
+                ],
+                throwOnError: false
+            });
         }
-        el.textContent = tex;
     }
 
     function loadEquationOfTheDay() {
@@ -320,18 +333,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('eqField').textContent = eq.field;
         document.getElementById('eqTitle').textContent = eq.title;
-        renderKatex(document.getElementById('eqStatementPreview'), eq.statement, true);
+        const teaserEl = document.getElementById('eqStatementPreview');
+        if (teaserEl) teaserEl.textContent = eq.teaser;
 
         card.addEventListener('click', () => {
             document.getElementById('eqmField').textContent = eq.field;
             document.getElementById('eqmTitle').textContent = eq.title;
-            renderKatex(document.getElementById('eqmStatement'), eq.statement, true);
-            renderKatex(document.getElementById('eqmProof'), eq.proof, true);
+            renderMixedMath(document.getElementById('eqmStatement'), eq.statement);
+            renderMixedMath(document.getElementById('eqmProof'), eq.proof);
             equationModal.open();
         });
     }
 
     loadEquationOfTheDay();
+
+    /* ===========================================================
+       NOTEBOOK — TAG FILTER
+       Only runs on pages with a #tagFilterBar element (i.e. the
+       Notebook listing page). Tags are discovered dynamically from
+       whatever .post-tag values already exist on the page, so this
+       needs no changes when new categories get added later.
+    =========================================================== */
+    function initTagFilters() {
+        const container = document.getElementById('tagFilterBar');
+        if (!container) return;
+
+        const cards = Array.from(document.querySelectorAll('.post-card'));
+        const tags = new Set();
+        cards.forEach(card => {
+            const tagEl = card.querySelector('.post-tag');
+            if (tagEl) tags.add(tagEl.textContent.trim());
+        });
+
+        // No point showing a filter bar for a single category.
+        if (tags.size <= 1) return;
+
+        function makePill(label, isActive) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'tag-pill' + (isActive ? ' active' : '');
+            btn.textContent = label;
+            btn.addEventListener('click', () => applyFilter(label, btn));
+            return btn;
+        }
+
+        function applyFilter(label, activeBtn) {
+            container.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+            activeBtn.classList.add('active');
+
+            cards.forEach(card => {
+                const tagEl = card.querySelector('.post-tag');
+                const matches = label === 'All' || (tagEl && tagEl.textContent.trim() === label);
+                card.style.display = matches ? '' : 'none';
+            });
+
+            // Hide a month's whole section header if nothing in it matches.
+            document.querySelectorAll('.month-group').forEach(group => {
+                const anyVisible = Array.from(group.querySelectorAll('.post-card'))
+                    .some(c => c.style.display !== 'none');
+                group.style.display = anyVisible ? '' : 'none';
+            });
+        }
+
+        container.appendChild(makePill('All', true));
+        Array.from(tags).sort().forEach(tag => container.appendChild(makePill(tag, false)));
+    }
+
+    initTagFilters();
 
     /* ===========================================================
        LIVE REPO COMMIT COUNT
