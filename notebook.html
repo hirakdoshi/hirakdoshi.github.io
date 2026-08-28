@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preload" href="fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
 <script>(function(){try{if(localStorage.getItem('site-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}})();</script>
 
 <meta charset="UTF-8">
@@ -10,7 +12,7 @@
 <meta name="description" content="Notes on mathematics, neuroimaging tooling, and things worth writing down.">
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=6">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
 </head>
 <body class="no-side-mobile">
@@ -37,6 +39,7 @@
         <section class="block" style="border-top: none; padding-top: 0;">
             <h1 class="about-name" style="font-size: clamp(1.9rem, 1.5rem + 2vw, 2.5rem); margin-bottom: 10px;">Notebook</h1>
             <p class="about-desc">From proofs to pipelines: penning down what's worth remembering.</p>
+            <div class="tag-filter-bar" id="tagFilterBar"></div>
         </section>
 
         <section class="block">
@@ -60,7 +63,7 @@
                             <div class="post-footer-row">
                                 <span class="post-published">Published on August 16, 2026</span>
                                 <div class="post-share">
-                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://being-hd.github.io/blog_posts/notebook-fsl-mrtrix-setup.html">Share →</button>
+                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://hirakdoshi.github.io/blog_posts/notebook-fsl-mrtrix-setup.html">Share →</button>
                                 </div>
                             </div>
                         </article>
@@ -80,12 +83,26 @@
                             <div class="post-meta-row">
                                 <span class="post-tag">Linux</span>
                             </div>
+                            <h3 class="post-title"><a href="blog_posts/learning-linux-permissions-processes.html">Learning Linux — IV: Permissions, Processes &amp; Disk Usage</a></h3>
+                            <p class="post-excerpt">15 more essential commands — grep, chmod, chown, ps, top, kill, df, du, tar, curl, ssh, scp, alias, history, ln — with real examples.</p>
+                            <div class="post-footer-row">
+                                <span class="post-published">Published on August 28, 2026</span>
+                                <div class="post-share">
+                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://hirakdoshi.github.io/blog_posts/learning-linux-permissions-processes.html">Share →</button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="post-card">
+                            <div class="post-meta-row">
+                                <span class="post-tag">Linux</span>
+                            </div>
                             <h3 class="post-title"><a href="blog_posts/learning-linux-basic-commands-files.html">Learning Linux — III: Basic Commands, Files &amp; Navigation</a></h3>
                             <p class="post-excerpt">15 essential commands for moving around and working with files — pwd, ls, cd, mkdir, cp, mv, rm, cat, head, tail, find, and more — with real examples.</p>
                             <div class="post-footer-row">
                                 <span class="post-published">Published on August 22, 2026</span>
                                 <div class="post-share">
-                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://being-hd.github.io/blog_posts/learning-linux-basic-commands-files.html">Share →</button>
+                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://hirakdoshi.github.io/blog_posts/learning-linux-basic-commands-files.html">Share →</button>
                                 </div>
                             </div>
                         </article>
@@ -99,7 +116,7 @@
                             <div class="post-footer-row">
                                 <span class="post-published">Published on August 19, 2026</span>
                                 <div class="post-share">
-                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://being-hd.github.io/blog_posts/learning-linux-filesystem-hierarchy.html">Share →</button>
+                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://hirakdoshi.github.io/blog_posts/learning-linux-filesystem-hierarchy.html">Share →</button>
                                 </div>
                             </div>
                         </article>
@@ -113,7 +130,7 @@
                             <div class="post-footer-row">
                                 <span class="post-published">Published on August 18, 2026</span>
                                 <div class="post-share">
-                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://being-hd.github.io/blog_posts/learning-linux-manual-partitioning.html">Share →</button>
+                                    <button class="share-link copy-link-btn" type="button" data-share-url="https://hirakdoshi.github.io/blog_posts/learning-linux-manual-partitioning.html">Share →</button>
                                 </div>
                             </div>
                         </article>
@@ -232,6 +249,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-<script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="script.js?v=4"></script>
 </body>
 </html>
