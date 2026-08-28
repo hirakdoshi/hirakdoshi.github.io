@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preload" href="../fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/ibm-plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
 <script>(function(){try{if(localStorage.getItem('site-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}})();</script>
 
 <meta charset="UTF-8">
@@ -10,7 +12,7 @@
 <meta name="description" content="A practical, human walkthrough of manual disk partitioning during a Linux install — both fresh single-OS setups and dual-boot alongside Windows.">
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../style.css?v=6">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
 </head>
 <body class="no-side-mobile">
@@ -47,7 +49,7 @@
             <div class="article-share-row">
                 <span class="post-published">Published on August 18, 2026 · <span id="readingTime">…</span></span>
                 <div class="post-share">
-                    <button class="share-link copy-link-btn" type="button" data-share-url="https://being-hd.github.io/blog_posts/learning-linux-manual-partitioning.html">Share →</button>
+                    <button class="share-link copy-link-btn" type="button" data-share-url="https://hirakdoshi.github.io/blog_posts/learning-linux-manual-partitioning.html">Share →</button>
                 </div>
             </div>
         </section>
@@ -208,6 +210,7 @@ sudo e2label /dev/sdb5 &lt;drive-name&gt;</code></pre>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-<script src="../script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="../script.js?v=4"></script>
 </body>
 </html>
