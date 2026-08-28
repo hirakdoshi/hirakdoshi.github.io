@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preload" href="fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
 <script>(function(){try{if(localStorage.getItem('site-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}})();</script>
 
 <meta charset="UTF-8">
@@ -11,7 +13,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -288,6 +290,21 @@
 
             <div class="post-card">
                 <div class="post-meta-row">
+                    <span class="post-tag">v2.0.0</span>
+                    <span class="post-date">August 28, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Math Proof of the Day rebuilt from the ground up: results now typeset as normal prose with inline math instead of rigid LaTeX blocks, fixing overflow, clipping, and alignment bugs on mobile and desktop; proof sketch now matches the theorem statement in size and color, and both are fully justified</li>
+                    <li>Site fonts (Anton, IBM Plex Mono, IBM Plex Sans) are now self-hosted instead of loaded from Google Fonts — removes an external DNS lookup and round trip on every page load, noticeably faster first paint</li>
+                    <li>Fixed a long-standing layout bug: the right sidebar now stays pinned in view while scrolling on desktop/web instead of scrolling away with the page</li>
+                    <li>New post: "Learning Linux — IV: Permissions, Processes & Disk Usage" — 15 more commands (grep, chmod, chown, ps, top, kill, df, du, tar, curl, ssh, scp, alias, history, ln)</li>
+                    <li>Notebook: added tag filtering — appears automatically once posts span more than one category, no manual setup required</li>
+                    <li>Fixed stale share links across all blog posts and the Notebook listing, left over from the domain migration</li>
+                </ul>
+            </div>
+
+            <div class="post-card">
+                <div class="post-meta-row">
                     <span class="post-tag">v1.7.0</span>
                     <span class="post-date">August 28, 2026</span>
                 </div>
@@ -423,6 +440,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-<script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="script.js?v=4"></script>
 </body>
 </html>
