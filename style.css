@@ -10,6 +10,14 @@
     font-display: swap;
 }
 @font-face {
+    font-family: 'VFC Fantomen';
+    src: url('fonts/vfc-fantomen.woff2') format('woff2'),
+         url('fonts/vfc-fantomen.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
     font-family: 'IBM Plex Mono';
     src: url('fonts/ibm-plex-mono-400.woff2') format('woff2');
     font-weight: 400;
@@ -87,33 +95,32 @@
 }
 
 /* ===========================================================
-   Light mode — warm cream/parchment, same accent family.
-   Scoped to <html> so an inline blocking script in <head> can
-   apply it before first paint (no flash of dark theme).
+   Light mode — overcast lake palette
+   Cool mist, slate, and muted copper; designed for legibility
+   over the subdued sun-and-water background.
 =========================================================== */
 html.light-mode {
-    --bg: #e8d9c3;
-    --bg-raised: #ddc9a9;
-    --bg-raised-2: #d1b892;
-    --line: rgba(58, 42, 24, 0.18);
-    --line-strong: rgba(58, 42, 24, 0.32);
+    --bg: #DCE2E3;
+    --bg-raised: #E7E9E8;
+    --bg-raised-2: #D2DADC;
 
-    --accent: #a8551f;
-    --accent-bright: #8a4316;
-    --accent-dim: rgba(138, 67, 22, 0.5);
+    --line: rgba(32, 43, 48, 0.30);
+    --line-strong: rgba(32, 43, 48, 0.52);
 
-    --text: #241a10;
-    --text-soft: #4a3624;
-    --text-faint: #715a41;
+    --accent: #853F21;
+    --accent-bright: #5B2815;
+    --accent-dim: rgba(133, 63, 33, 0.18);
 
-    --live: #3d7e57;
-    --white-side: #241a10;
-    --black-side: #715a41;
+    --text: #202B30;
+    --text-soft: #34464E;
+    --text-faint: #394246;
+
+    --live: #286747;
+    --white-side: #202B30;
+    --black-side: #4B5D65;
 
     color-scheme: light;
 }
-
-html.light-mode body::before { display: none; }
 
 .theme-toggle {
     display: inline-flex;
@@ -149,9 +156,68 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-sans);
-    font-size: 15px;
+    font-weight: 500;
+    font-size: 16.5px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
+    position: relative;
+}
+
+/* ===========================================================
+   Ambient background — a cloudy moon-over-water night scene
+   (bg-night.svg), swapped for an overcast sun-over-water scene
+   in light mode (bg-day.svg). Both SVGs animate their own clouds
+   and water ripples internally (SMIL), so nothing here needs to
+   drive motion. This layer (::before) holds the illustration,
+   blurred so it reads as atmosphere rather than a sharp picture;
+   a second layer (::after) washes it with the page's own --bg
+   color so it always sits comfortably behind text in either
+   theme, at whatever brightness that theme's text needs.
+=========================================================== */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url('images/bg-night.svg');
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    filter: blur(3px);
+    transform: scale(1.03); /* hides the blurred edge fringe */
+}
+
+html.light-mode body::before {
+    background-image: url('images/bg-day.svg');
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: var(--bg);
+    opacity: 0.5;
+}
+
+/* Same 0.5 strength as dark mode gets — the photo should show
+   through exactly as much in both themes. */
+html.light-mode body::after { opacity: 0.5; }
+
+@media (prefers-reduced-motion: reduce) {
+    body::before { filter: blur(3px); }
+}
+
+/* The content wrapper needs to sit above the gradient layer and
+   keep its own backgrounds opaque — .shell is the top-level
+   content wrapper on every page. Deliberately excludes the
+   theme/header toggle buttons, which already manage their own
+   fixed position + z-index further up this file. */
+.shell, .site-header, .site-footer, .modal-overlay {
+    position: relative;
+    z-index: 1;
 }
 
 img { max-width: 100%; display: block; }
@@ -212,15 +278,15 @@ img[data-piece] { max-width: none; width: auto; height: auto; display: inline-bl
 .entry-item::before {
     content: counter(entry, decimal-leading-zero);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12.5px;
     color: var(--accent);
     padding-top: 3px;
 }
 
 .entry-title { font-size: 14px; color: var(--text); margin: 0 0 5px; line-height: 1.55; text-align: justify; text-justify: inter-word; }
 .entry-title strong { color: var(--accent-bright); font-family: var(--font-sans); font-weight: 500; }
-.entry-meta { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-soft); margin: 0 0 4px; text-align: justify; text-justify: inter-word; }
-.entry-desc { font-size: 13px; color: var(--text-soft); margin: 6px 0 0; line-height: 1.6; text-align: justify; text-justify: inter-word; }
+.entry-meta { font-family: var(--font-mono); font-size: 13px; color: var(--text-soft); margin: 0 0 4px; text-align: justify; text-justify: inter-word; }
+.entry-desc { font-size: 14.5px; color: var(--text-soft); margin: 6px 0 0; line-height: 1.6; text-align: justify; text-justify: inter-word; }
 
 /* ===========================================================
    Card grid — GitHub projects, certifications, memberships
@@ -246,15 +312,15 @@ img[data-piece] { max-width: none; width: auto; height: auto; display: inline-bl
 }
 
 .info-tile:hover { border-color: var(--line-strong); transform: translateY(-2px); }
-.info-tile h4 { font-family: var(--font-sans); font-size: 13.5px; font-weight: 600; color: var(--text); margin: 0 0 6px; }
-.info-tile p { font-size: 12.5px; color: var(--text-soft); margin: 0; line-height: 1.55; }
-.info-tile .tile-meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-faint); margin-top: 8px; display: block; }
+.info-tile h4 { font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--text); margin: 0 0 6px; }
+.info-tile p { font-size: 14px; color: var(--text-soft); margin: 0; line-height: 1.55; }
+.info-tile .tile-meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); margin-top: 8px; display: block; }
 
 /* Skills key/value rows (project page) */
 .kv-list { display: flex; flex-direction: column; gap: 0; }
-.kv-row { display: grid; grid-template-columns: 130px 1fr; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.kv-row { display: grid; grid-template-columns: 130px 1fr; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
 .kv-row:last-child { border-bottom: none; }
-.kv-row .k { font-family: var(--font-mono); font-size: 11px; color: var(--text-soft); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 2px; }
+.kv-row .k { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-soft); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 2px; }
 .kv-row .v { color: var(--text-soft); }
 
 /* ===========================================================
@@ -279,7 +345,7 @@ img[data-piece] { max-width: none; width: auto; height: auto; display: inline-bl
     min-width: 26px;
     padding: 2px 7px;
     border-radius: 4px;
-    font-size: 10.5px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.02em;
     color: #10140f;
@@ -291,12 +357,12 @@ img[data-piece] { max-width: none; width: auto; height: auto; display: inline-bl
 .sjr-q.q4 { background: #DF675D; } /* SCImago red */
 .sjr-q.unranked { background: var(--bg-raised-2); color: var(--text-faint); }
 
-.sjr-score { font-size: 10.5px; color: var(--text-soft); }
+.sjr-score { font-size: 12px; color: var(--text-soft); }
 .sjr-score strong { color: var(--accent); font-weight: 600; }
 .sjr-score a { border: none; background-image: none; padding-bottom: 0; border-bottom: 1px dotted var(--accent); transition: color .15s var(--ease); }
 .sjr-score a:hover strong { color: var(--accent-bright); }
 .sjr-score a:hover { border-bottom-color: var(--accent-bright); }
-.sjr-year { font-size: 10px; color: var(--text-faint); }
+.sjr-year { font-size: 11.5px; color: var(--text-faint); }
 .sjr-sep { color: var(--text-faint); }
 ::selection { background: rgba(227, 182, 132, 0.25); color: var(--accent-bright); }
 
@@ -361,7 +427,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
     border: 1px solid var(--line-strong);
     color: var(--accent);
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 13.5px;
     border-radius: 6px;
     padding: 8px 12px;
 }
@@ -401,13 +467,13 @@ strong { color: var(--accent-bright); font-weight: 600; }
     overflow: hidden;
     flex-shrink: 0;
     border: 3px solid var(--accent);
-    box-shadow: 0 0 0 4px var(--bg), 0 0 18px rgba(227, 182, 132, 0.25);
+    box-shadow: 0 0 18px rgba(227, 182, 132, 0.25);
     cursor: pointer;
     transition: transform .18s var(--ease), box-shadow .18s var(--ease);
 }
 .portrait:hover {
     transform: scale(1.04);
-    box-shadow: 0 0 0 4px var(--bg), 0 0 26px rgba(227, 182, 132, 0.4);
+    box-shadow: 0 0 26px rgba(227, 182, 132, 0.4);
 }
 .portrait img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -467,7 +533,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
 }
 .tag-pill {
     font-family: var(--font-mono);
-    font-size: 11.5px;
+    font-size: 13px;
     letter-spacing: 0.03em;
     text-transform: uppercase;
     color: var(--text-soft);
@@ -493,7 +559,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
 
 .block-label {
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--text-soft);
@@ -518,14 +584,14 @@ strong { color: var(--accent-bright); font-weight: 600; }
     100% { box-shadow: 0 0 0 0 rgba(127, 201, 154, 0); }
 }
 
-.affil-item h4 { margin: 0 0 4px; font-family: var(--font-mono); font-size: 13.5px; color: var(--accent); }
-.affil-item p { margin: 0; font-size: 13.5px; color: var(--text-soft); }
+.affil-item h4 { margin: 0 0 4px; font-family: var(--font-mono); font-size: 15px; color: var(--accent); }
+.affil-item p { margin: 0; font-size: 15px; color: var(--text-soft); }
 .nowrap-link { white-space: nowrap; }
 .affil-item p + p { margin-top: 4px; }
 .affil-item .badge {
     display: inline-block;
     font-family: var(--font-mono);
-    font-size: 9.5px;
+    font-size: 11px;
     color: var(--live);
     border: 1px solid rgba(127,201,154,0.4);
     border-radius: 3px;
@@ -542,7 +608,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
     font-family: var(--font-mono);
-    font-size: 11.5px;
+    font-size: 13px;
     color: var(--text-soft);
     background: var(--bg-raised);
     border: 1px solid var(--line);
@@ -590,13 +656,13 @@ strong { color: var(--accent-bright); font-weight: 600; }
 
 .now-label {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--text-soft);
 }
 
-.now-value { font-size: 13.5px; color: var(--text); line-height: 1.5; text-align: justify; text-justify: inter-word; }
+.now-value { font-size: 15px; color: var(--text); line-height: 1.5; text-align: justify; text-justify: inter-word; }
 
 .stat-grid {
     display: grid;
@@ -628,7 +694,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
 
 .stat-box .lbl {
     font-family: var(--font-mono);
-    font-size: 9.5px;
+    font-size: 11px;
     color: var(--text-soft);
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -681,12 +747,12 @@ strong { color: var(--accent-bright); font-weight: 600; }
 
 .live-card-sub {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 12px;
     color: var(--text-soft);
 }
 
-.live-modal-loading { color: var(--text-soft); font-size: 13.5px; margin: 16px 0; }
-.live-modal-error { color: var(--text-soft); font-size: 13.5px; margin: 16px 0; }
+.live-modal-loading { color: var(--text-soft); font-size: 15px; margin: 16px 0; }
+.live-modal-error { color: var(--text-soft); font-size: 15px; margin: 16px 0; }
 
 .live-profile-header {
     display: flex;
@@ -702,7 +768,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
     object-fit: cover;
 }
 .live-profile-name { font-family: var(--font-sans); font-weight: 600; font-size: 16px; color: var(--text); }
-.live-profile-meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+.live-profile-meta { font-family: var(--font-mono); font-size: 13.5px; color: var(--text-soft); margin-top: 2px; }
 
 .live-stat-grid {
     display: grid;
@@ -716,7 +782,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
     padding: 12px 14px;
 }
 .live-stat-item .num { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; color: var(--accent-bright); line-height: 1; }
-.live-stat-item .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 6px; }
+.live-stat-item .lbl { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 6px; }
 
 .stat-tile-grid {
     display: grid;
@@ -738,11 +804,15 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .stat-tile-icon { width: 28px; height: 28px; color: var(--accent); }
 .stat-tile-icon svg, .stat-tile-icon img { width: 100%; height: 100%; }
 .stat-tile-value { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--text); }
-.stat-tile-value .prov { color: var(--text-soft); font-weight: 400; font-size: 10px; }
-.stat-tile-label { font-family: var(--font-mono); font-size: 9.5px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.03em; }
+.stat-tile-value .prov { color: var(--text-soft); font-weight: 400; font-size: 11.5px; }
+.stat-tile-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.03em; }
 
 @media screen and (max-width: 480px) {
     .stat-tile-grid { grid-template-columns: repeat(3, 1fr); }
+    /* GitHub's modal has exactly 4 tiles — 3+1 looks broken, so it
+       gets its own 2x2 instead of the general 3-column mobile rule
+       (which still suits Lichess's 7-tile grid). */
+    #githubModalBody .stat-tile-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .modal-profile-header {
@@ -770,7 +840,7 @@ strong { color: var(--accent-bright); font-weight: 600; }
 .modal-profile-avatar svg { width: 100%; height: 100%; }
 img.modal-profile-avatar { padding: 0; }
 .modal-profile-name { font-family: var(--font-sans); font-weight: 600; font-size: 17px; color: var(--text); }
-.modal-profile-meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-soft); margin-top: 4px; }
+.modal-profile-meta { font-family: var(--font-mono); font-size: 13.5px; color: var(--text-soft); margin-top: 4px; }
 
 /* ===========================================================
    Footer
@@ -786,9 +856,9 @@ img.modal-profile-avatar { padding: 0; }
     gap: 14px;
 }
 
-.site-footer p { margin: 0; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); }
+.site-footer p { margin: 0; font-family: var(--font-mono); font-size: 13px; color: var(--text-faint); }
 .footer-socials { display: flex; gap: 18px; justify-self: end; }
-.footer-socials a { border: none; font-family: var(--font-mono); font-size: 12px; color: var(--text-soft); }
+.footer-socials a { border: none; font-family: var(--font-mono); font-size: 13.5px; color: var(--text-soft); }
 .footer-socials a:hover { color: var(--accent); }
 
 .footer-center {
@@ -801,7 +871,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .footer-contact {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 13.5px;
     color: var(--text-soft);
     border: none;
     background: transparent;
@@ -813,7 +883,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .footer-changelog {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12.5px;
     color: var(--text-faint);
     border: none;
     background: transparent;
@@ -840,7 +910,7 @@ img.modal-profile-avatar { padding: 0; }
 .form-row label {
     display: block;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12.5px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-faint);
@@ -856,7 +926,7 @@ img.modal-profile-avatar { padding: 0; }
     padding: 10px 12px;
     color: var(--text);
     font-family: var(--font-sans);
-    font-size: 13.5px;
+    font-size: 15px;
     resize: vertical;
     transition: border-color .15s var(--ease);
 }
@@ -869,7 +939,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .form-status {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 13.5px;
     margin: 10px 0 0;
     min-height: 16px;
 }
@@ -908,7 +978,7 @@ img.modal-profile-avatar { padding: 0; }
     color: var(--accent-bright);
     margin: 0 0 4px;
 }
-.side-sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-faint); margin: 0 0 18px; text-align: justify; text-justify: inter-word; }
+.side-sub { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); margin: 0 0 18px; text-align: justify; text-justify: inter-word; }
 
 .paper-card {
     display: block;
@@ -928,7 +998,7 @@ img.modal-profile-avatar { padding: 0; }
 .paper-tag {
     display: inline-block;
     font-family: var(--font-mono);
-    font-size: 9.5px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--accent-bright);
@@ -939,8 +1009,8 @@ img.modal-profile-avatar { padding: 0; }
     margin-bottom: 8px;
 }
 
-.paper-title { font-size: 13px; color: var(--text); margin: 0 0 6px; line-height: 1.4; font-weight: 500; text-align: justify; text-justify: inter-word; }
-.paper-meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-faint); margin: 0; }
+.paper-title { font-size: 14.5px; color: var(--text); margin: 0 0 6px; line-height: 1.4; font-weight: 500; text-align: justify; text-justify: inter-word; }
+.paper-meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); margin: 0; }
 
 .paper-skeleton { opacity: 0.5; }
 .paper-skeleton .paper-title { background: var(--bg-raised-2); color: transparent; border-radius: 4px; height: 1.4em; }
@@ -965,7 +1035,7 @@ img.modal-profile-avatar { padding: 0; }
 .equation-card:hover { border-color: var(--line-strong); transform: translateY(-1px); background: var(--bg-raised-2); }
 
 .eq-card-statement {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--text-soft);
     line-height: 1.6;
     margin: 10px 0 0;
@@ -1001,7 +1071,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .eq-proof-label {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--accent-bright);
@@ -1025,7 +1095,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .puzzle-turn {
     font-family: var(--font-mono);
-    font-size: 11.5px;
+    font-size: 13px;
     color: var(--text-soft);
     margin: 0 0 12px;
 }
@@ -1036,7 +1106,7 @@ img.modal-profile-avatar { padding: 0; }
     align-items: center;
     gap: 8px;
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--bg);
     background: var(--accent);
     border: none;
@@ -1105,11 +1175,11 @@ img.modal-profile-avatar { padding: 0; }
 }
 .modal-close:hover { color: var(--accent-bright); border-color: var(--accent); }
 
-.modal-tag { display: inline-block; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-bright); background: transparent; border: 1px solid var(--accent-bright); border-radius: 3px; padding: 3px 8px; margin-bottom: 14px; }
+.modal-tag { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-bright); background: transparent; border: 1px solid var(--accent-bright); border-radius: 3px; padding: 3px 8px; margin-bottom: 14px; }
 .modal-box h3 { font-family: var(--font-sans); font-size: 1.25rem; line-height: 1.4; color: var(--text); margin: 0 0 10px; }
-.modal-meta { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); margin: 0 0 4px; text-align: justify; text-justify: inter-word; }
+.modal-meta { font-family: var(--font-mono); font-size: 13px; color: var(--text-faint); margin: 0 0 4px; text-align: justify; text-justify: inter-word; }
 .modal-meta strong { color: var(--accent); font-weight: 500; }
-.modal-abstract { font-size: 13.5px; color: var(--text-soft); margin: 16px 0; line-height: 1.7; text-align: justify; text-justify: inter-word; }
+.modal-abstract { font-size: 15px; color: var(--text-soft); margin: 16px 0; line-height: 1.7; text-align: justify; text-justify: inter-word; }
 .modal-keywords { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 20px; }
 
 /* Puzzle modal specifics */
@@ -1119,7 +1189,7 @@ img.modal-profile-avatar { padding: 0; }
     overflow-x: hidden;
 }
 #puzzleBoard { width: 100%; max-width: 380px; margin: 10px auto 16px; }
-.puzzle-status { font-family: var(--font-mono); font-size: 13px; color: var(--text-soft); min-height: 20px; margin: 0 0 14px; }
+.puzzle-status { font-family: var(--font-mono); font-size: 14.5px; color: var(--text-soft); min-height: 20px; margin: 0 0 14px; }
 .puzzle-status.correct { color: var(--live); }
 .puzzle-status.wrong { color: #d9755f; }
 .puzzle-actions { display: flex; gap: 10px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
@@ -1193,10 +1263,10 @@ img.modal-profile-avatar { padding: 0; }
         gap: 8px;
     }
 
-    .post-published { font-size: 9.5px; }
-    .share-label { font-size: 9.5px; margin-right: 0; }
+    .post-published { font-size: 11px; }
+    .share-label { font-size: 11px; margin-right: 0; }
     .post-share { gap: 6px; }
-    .share-link { font-size: 10px; padding: 3px 7px; }
+    .share-link { font-size: 11.5px; padding: 3px 7px; }
 
     .post-excerpt { text-align: justify; text-justify: inter-word; }
     .month-body { padding-left: 22px; }
@@ -1234,8 +1304,8 @@ img.modal-profile-avatar { padding: 0; }
     }
 
     .info-tile { padding: 12px 14px; }
-    .info-tile h4 { font-size: 12.5px; }
-    .info-tile p { font-size: 11.5px; }
+    .info-tile h4 { font-size: 14px; }
+    .info-tile p { font-size: 13px; }
     .block { padding: 18px 0; }
     .about-block { margin-bottom: 22px; gap: 18px; }
     .site-header { padding-top: 16px; }
@@ -1329,7 +1399,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .post-tag {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--accent-bright);
@@ -1341,7 +1411,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .post-date {
     font-family: var(--font-mono);
-    font-size: 11.5px;
+    font-size: 13px;
     color: var(--text-faint);
 }
 
@@ -1361,7 +1431,7 @@ img.modal-profile-avatar { padding: 0; }
 .post-title a:hover { color: var(--accent-bright); }
 
 .post-excerpt {
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--text-soft);
     line-height: 1.65;
     margin: 0;
@@ -1384,7 +1454,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .post-published {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 12px;
     color: var(--text-faint);
 }
 
@@ -1396,7 +1466,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .share-label {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 12px;
     color: var(--text-faint);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1405,7 +1475,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .share-link {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--accent-bright);
     background: transparent;
@@ -1424,7 +1494,7 @@ img.modal-profile-avatar { padding: 0; }
     top: 10px;
     right: 10px;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 11.5px;
     color: var(--text-faint);
     background: transparent;
     border: 1px solid var(--line);
@@ -1507,7 +1577,7 @@ img.modal-profile-avatar { padding: 0; }
     border: none;
     padding: 0;
     color: var(--text);
-    font-size: 13px;
+    font-size: 14.5px;
     line-height: 1.6;
 }
 
@@ -1531,7 +1601,7 @@ img.modal-profile-avatar { padding: 0; }
     min-width: 480px;
     border-collapse: collapse;
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: 14px;
 }
 
 .article-body th, .article-body td {
@@ -1546,7 +1616,7 @@ img.modal-profile-avatar { padding: 0; }
 .article-body th {
     color: var(--accent-bright);
     font-weight: 600;
-    font-size: 10.5px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     background: var(--bg-raised);
@@ -1559,7 +1629,7 @@ img.modal-profile-avatar { padding: 0; }
     align-items: center;
     gap: 6px;
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--text-soft);
     border: none;
     margin-bottom: 8px;
@@ -1660,7 +1730,7 @@ img.modal-profile-avatar { padding: 0; }
 
 .changelog-list li {
     margin-bottom: 7px;
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--text-soft);
     line-height: 1.6;
     text-align: justify;
@@ -1670,3 +1740,161 @@ img.modal-profile-avatar { padding: 0; }
 .changelog-list li::marker { color: var(--accent); }
 
 .changelog-list li:last-child { margin-bottom: 0; }
+
+/* ===========================================================
+   Scroll reveal — dissolve/fade-in as sections, cards and rows
+   enter the viewport while scrolling. Classes are added at
+   runtime by initScrollReveal() in script.js, so no per-page
+   markup changes are needed. Works the same on web, tablet and
+   mobile since it's driven by IntersectionObserver, not hover
+   or pointer state.
+=========================================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* ===========================================================
+   Light mode — real shadow-based lift instead of a colored border
+   gimmick, since white-on-off-white needs something to separate
+   card from page. Orange stays reserved for text/tags/links.
+=========================================================== */
+html.light-mode .info-tile,
+html.light-mode .live-card,
+html.light-mode .paper-card,
+html.light-mode .equation-card,
+html.light-mode .post-card,
+html.light-mode .puzzle-card,
+html.light-mode .modal-box {
+    background-color: rgba(183, 185, 185, 0.94);
+    border-color: var(--line);
+    color: var(--text);
+    box-shadow: 0 3px 12px rgba(32, 43, 48, 0.08), 0 1px 3px rgba(32, 43, 48, 0.05);
+}
+
+/* Keep light-mode text and controls readable over the scenery. */
+html.light-mode a { color: var(--accent); }
+html.light-mode a:hover { color: var(--accent-bright); }
+
+html.light-mode input,
+html.light-mode textarea,
+html.light-mode select {
+    background-color: rgba(237, 240, 239, 0.97);
+    color: var(--text);
+    border-color: var(--line-strong);
+}
+
+html.light-mode ::selection {
+    background: #B8C9CD;
+    color: #202B30;
+}
+
+
+/* Light-mode contrast refinements */
+html.light-mode .entry-meta,
+html.light-mode .entry-desc,
+html.light-mode .info-tile p,
+html.light-mode .kv-row .k,
+html.light-mode .kv-row .v,
+html.light-mode .about-desc,
+html.light-mode .affil-item p {
+    color: var(--text-soft);
+}
+
+html.light-mode .info-tile .tile-meta,
+html.light-mode .sjr-year,
+html.light-mode .sjr-sep,
+html.light-mode .about-titles .sep {
+    color: var(--text-faint);
+}
+
+html.light-mode a:hover,
+html.light-mode a:focus-visible,
+html.light-mode strong,
+html.light-mode .main-nav a:hover,
+html.light-mode .main-nav a[aria-current="page"] {
+    color: var(--accent-bright);
+}
+
+html.light-mode .theme-toggle,
+html.light-mode input,
+html.light-mode textarea,
+html.light-mode select,
+html.light-mode .tag-pill {
+    border-color: var(--line-strong);
+}
+
+
+
+/* Fix light-mode action links/buttons: the global anchor colour must not
+   override the foreground colour of filled buttons such as "Read on publisher website". */
+html.light-mode a.btn,
+html.light-mode a.btn:visited,
+html.light-mode .btn,
+html.light-mode .btn:visited {
+    color: #F7F4EF;
+    background-color: #853F21;
+    border-color: #853F21;
+    font-weight: 600;
+}
+
+html.light-mode a.btn:hover,
+html.light-mode a.btn:focus-visible,
+html.light-mode .btn:hover,
+html.light-mode .btn:focus-visible {
+    color: #FFFFFF;
+    background-color: #542311;
+    border-color: #542311;
+}
+
+html.light-mode a.btn-ghost,
+html.light-mode a.btn-ghost:visited,
+html.light-mode .btn-ghost {
+    color: #34464E;
+    background: transparent;
+    border-color: #637780;
+    font-weight: 600;
+}
+
+html.light-mode a.btn-ghost:hover,
+html.light-mode a.btn-ghost:focus-visible,
+html.light-mode .btn-ghost:hover,
+html.light-mode .btn-ghost:focus-visible {
+    color: #542311;
+    border-color: #542311;
+    background: rgba(133, 63, 33, 0.08);
+}
+
+/* Other card action links should remain readable on pale surfaces. */
+html.light-mode .paper-card a,
+html.light-mode .info-tile a,
+html.light-mode .live-card a,
+html.light-mode .post-card a,
+html.light-mode .puzzle-card a {
+    color: #853F21;
+    font-weight: 600;
+}
+
+html.light-mode .paper-card a:hover,
+html.light-mode .info-tile a:hover,
+html.light-mode .live-card a:hover,
+html.light-mode .post-card a:hover,
+html.light-mode .puzzle-card a:hover {
+    color: #542311;
+}

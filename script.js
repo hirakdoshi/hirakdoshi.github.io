@@ -43,6 +43,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ---------------------------------------------------------
+       Scroll reveal — fade/dissolve sections, cards and rows in
+       as they enter the viewport. Adds the .reveal / .is-visible
+       classes from style.css at runtime so it works uniformly
+       across every page (web, tablet, mobile) with no per-page
+       markup changes. Falls back to showing everything instantly
+       for prefers-reduced-motion or browsers without
+       IntersectionObserver.
+    --------------------------------------------------------- */
+    function initScrollReveal() {
+        const selectors = [
+            // A long-form notebook post is one big section.block.article-body
+            // wrapping the whole article — too tall to usefully fade in as a
+            // single unit, so its direct children (headings, paragraphs,
+            // code blocks, images...) are animated individually instead.
+            'section.block:not(.article-body)',
+            '.article-body > *',
+            '.research-block',
+            '.equation-block',
+            '.puzzle-block',
+            '.entry-item',
+            '.post-card',
+            '.paper-card',
+            '.info-tile',
+            '.live-card',
+            '.kv-row',
+            '.month-group'
+        ];
+        const targets = Array.from(document.querySelectorAll(selectors.join(',')));
+        if (!targets.length) return;
+
+        const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced || !('IntersectionObserver' in window)) {
+            targets.forEach((el) => el.classList.add('reveal', 'is-visible'));
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+
+        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+
+        targets.forEach((el, i) => {
+            // Anything already on screen (or a tall block that merely
+            // *starts* on screen, like a long article header) should
+            // just be there on load — only genuinely below-the-fold
+            // content gets the fade-in-on-scroll treatment.
+            const rect = el.getBoundingClientRect();
+            const alreadyInView = rect.top < viewportH && rect.bottom > 0;
+
+            el.classList.add('reveal');
+            if (alreadyInView) {
+                el.classList.add('is-visible');
+                return;
+            }
+            el.style.transitionDelay = `${(i % 6) * 60}ms`;
+            observer.observe(el);
+        });
+    }
+
+    initScrollReveal();
+
+    /* ---------------------------------------------------------
        Generic modal helpers
     --------------------------------------------------------- */
     function wireModal(overlayId, closeBtnId) {
@@ -599,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="modal-profile-header">
                             <img class="modal-profile-avatar" src="${data.avatar_url}" alt="" style="object-fit:cover;">
                             <div class="modal-profile-name">${data.name || data.login}</div>
-                            <div class="modal-profile-meta">@${data.login} · on GitHub since ${memberSince}</div>
+                            <div class="modal-profile-meta">@${data.login}</div>
                         </div>
                         <div class="stat-tile-grid">
                             <div class="stat-tile"><span class="stat-tile-icon">${ICON_REPO}</span><span class="stat-tile-value">${data.public_repos}</span><span class="stat-tile-label">Public repos</span></div>
