@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preload" href="fonts/vfc-fantomen.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
 <script>(function(){try{if(localStorage.getItem('site-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}})();</script>
@@ -22,7 +23,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=2">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 
@@ -221,6 +222,7 @@
         <a href="https://twitter.com/beinghd16/" target="_blank" rel="noopener">X</a>
         <a href="https://github.com/hirakdoshi" target="_blank" rel="noopener">GitHub</a>
         <a href="https://linkedin.com/in/hirak-doshi/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.youtube.com/@hirak16" target="_blank" rel="noopener">YouTube</a>
     </div>
 </footer>
 
@@ -336,6 +338,22 @@
         <span class="modal-tag">Changelog</span>
         <h3>Site history</h3>
         <div class="post-list">
+
+            <div class="post-card">
+                <div class="post-meta-row">
+                    <span class="post-tag">v4.3.0</span>
+                    <span class="post-date">November 1, 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Pages now fade in with a smooth dissolve as you scroll, on web, tablet, and mobile — content already on screen on load appears instantly, so only what's actually below the fold animates in</li>
+                    <li>New ambient background scene behind every page: a cloudy moon over rippling water at night, and the same scene with the moon swapped for an overcast sun in light mode — blurred just enough to stay out of the way of the text</li>
+                    <li>Light mode rebuilt with a fresh "overcast lake" color palette — warmer, better contrast against the new background, and easier on the eyes than earlier attempts</li>
+                    <li>Removed the extra colored ring around the homepage portrait photo, keeping just the single accent rim in both themes</li>
+                    <li>Added a YouTube channel link to the footer on every page, including each individual Notebook post</li>
+                    <li>GitHub stats card: removed the duplicate "years on GitHub" line, and fixed the 4-stat grid on mobile to lay out as a clean 2x2 instead of 3-then-1</li>
+                    <li>Minor light-mode card background tweak for a touch more contrast</li>
+                </ul>
+            </div>
 
             <div class="post-card">
                 <div class="post-meta-row">
@@ -515,6 +533,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-<script src="script.js?v=13"></script>
+<script src="script.js?v=15"></script>
 </body>
 </html>
